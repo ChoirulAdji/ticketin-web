@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TicketIn — Masuk</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { deep: '#001840', mid: '#102A71' },
+            gold: { DEFAULT: '#F5C400', light: '#FFDC5F', badge: '#FFDF00' }
+          },
+          fontFamily: { poppins: ['Poppins', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Poppins', sans-serif; }
+
+    /* Background animated blobs */
+    body {
+      background: #001840;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .bg-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    .bg-blob-1 {
+      width: 500px; height: 500px;
+      background: #F5C400;
+      top: -120px; left: -100px;
+      animation-delay: 0s;
+    }
+    .bg-blob-2 {
+      width: 400px; height: 400px;
+      background: #102A71;
+      bottom: -80px; right: -80px;
+      animation-delay: -3s;
+    }
+    .bg-blob-3 {
+      width: 250px; height: 250px;
+      background: #F5C400;
+      bottom: 100px; left: 40%;
+      animation-delay: -5s;
+      opacity: 0.08;
+    }
+    @keyframes blobFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* Card glass effect */
+    .glass-card {
+      background: rgba(16, 42, 113, 0.45);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(245, 196, 0, 0.15);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* Input styling */
+    .input-field {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      color: white;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .input-field::placeholder { color: rgba(255,255,255,0.35); }
+    .input-field:focus {
+      border-color: #F5C400;
+      background: rgba(245, 196, 0, 0.06);
+      box-shadow: 0 0 0 4px rgba(245, 196, 0, 0.1);
+    }
+    .input-field:focus + .input-icon { color: #F5C400; }
+
+    /* Input group */
+    .input-group { position: relative; }
+    .input-icon {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.35);
+      transition: color 0.3s;
+      pointer-events: none;
+    }
+    .toggle-pass {
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.35);
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .toggle-pass:hover { color: #F5C400; }
+
+    /* Button */
+    .btn-login {
+      background: linear-gradient(135deg, #F5C400 0%, #FFDC5F 100%);
+      color: #001840;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-login::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #FFDC5F, #F5C400);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(245,196,0,0.4); }
+    .btn-login:hover::after { opacity: 1; }
+    .btn-login span { position: relative; z-index: 1; }
+    .btn-login:active { transform: translateY(0); }
+
+    /* Social button */
+    .btn-social {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.8);
+      transition: all 0.3s ease;
+    }
+    .btn-social:hover {
+      background: rgba(245,196,0,0.1);
+      border-color: rgba(245,196,0,0.4);
+      color: #F5C400;
+      transform: translateY(-1px);
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.3);
+      font-size: 12px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Checkmark animation */
+    .check-label input:checked ~ .check-box {
+      background: #F5C400;
+      border-color: #F5C400;
+    }
+    .check-box {
+      width: 18px; height: 18px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .check-box svg { opacity: 0; transition: opacity 0.2s; }
+    .check-label input:checked ~ .check-box svg { opacity: 1; }
+
+    /* Page enter animation */
+    .card-enter {
+      animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(30px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Stagger children */
+    .stagger > * { opacity: 0; transform: translateY(16px); animation: fadeUp 0.5s ease forwards; }
+    .stagger > *:nth-child(1) { animation-delay: 0.15s; }
+    .stagger > *:nth-child(2) { animation-delay: 0.22s; }
+    .stagger > *:nth-child(3) { animation-delay: 0.29s; }
+    .stagger > *:nth-child(4) { animation-delay: 0.36s; }
+    .stagger > *:nth-child(5) { animation-delay: 0.43s; }
+    .stagger > *:nth-child(6) { animation-delay: 0.50s; }
+    .stagger > *:nth-child(7) { animation-delay: 0.57s; }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Nav link */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background: #F5C400;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Error shake */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+
+    /* Success state */
+    .success-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,24,64,0.95);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .success-overlay.show { opacity: 1; pointer-events: all; }
+    .success-circle {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F5C400, #FFDC5F);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 0 rgba(245,196,0,0.4);
+      animation: successPulse 1s ease infinite;
+    }
+    @keyframes successPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(245,196,0,0.4); }
+      70%  { box-shadow: 0 0 0 20px rgba(245,196,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(245,196,0,0); }
+    }
+
+    /* Ticket decoration */
+    .ticket-deco {
+      position: absolute;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Animated blobs -->
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+  <div class="bg-blob bg-blob-3"></div>
+
+  <!-- ══ NAVBAR ══ -->
+  <header class="fixed top-0 left-0 w-full z-50" style="background: rgba(16,42,113,0.5); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(245,196,0,0.1);">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center group-hover:bg-gold-light transition-all duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+          </svg>
+        </div>
+        <span class="text-xl font-bold text-white tracking-tight">TicketIn</span>
+      </a>
+      <nav class="hidden md:flex gap-8">
+        <a href="index.html#beranda" class="nav-link text-white/70 hover:text-gold transition-colors font-medium text-sm">Beranda</a>
+        <a href="index.html#tentang" class="nav-link text-white/70 hover:text-gold transition-colors font-medium text-sm">Event</a>
+        <a href="index.html#kontak" class="nav-link text-white/70 hover:text-gold transition-colors font-medium text-sm">Hubungi Kami</a>
+      </nav>
+      <a href="register.html" class="text-white/70 hover:text-gold transition-colors font-medium text-sm hidden md:block">
+        Belum punya akun? <span class="text-gold font-semibold">Daftar</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main class="flex-1 flex items-center justify-center px-4 pt-28 pb-12 relative">
+
+    <!-- Decorative ticket SVGs -->
+    <svg class="ticket-deco" style="top:10%; right: 5%; width:140px;" viewBox="0 0 24 24" fill="white">
+      <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+    </svg>
+    <svg class="ticket-deco" style="bottom:15%; left: 3%; width:90px; transform: rotate(-20deg);" viewBox="0 0 24 24" fill="white">
+      <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+    </svg>
+
+    <div class="w-full max-w-md card-enter">
+      <div class="glass-card rounded-2xl p-8 md:p-10">
+
+        <!-- Header -->
+        <div class="text-center mb-8 stagger">
+          <!-- Icon -->
+          <div class="w-14 h-14 bg-gold rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-gold/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+            </svg>
+          </div>
+          <h1 class="text-2xl font-extrabold text-white">Selamat Datang Kembali!</h1>
+          <p class="text-white/50 text-sm mt-1">Masuk ke akun TicketIn kamu</p>
+        </div>
+
+        <!-- Form -->
+        <form id="login-form" class="space-y-5 stagger" novalidate>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Email</label>
+            <div class="input-group">
+              <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+              </svg>
+              <input
+                type="email" id="email" name="email"
+                placeholder="email@kamu.com"
+                class="input-field w-full rounded-xl pl-10 pr-4 py-3 text-sm"
+                autocomplete="email"
+              />
+            </div>
+            <p class="error-msg text-red-400 text-xs mt-1 hidden" id="email-err"></p>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Password</label>
+            <div class="input-group">
+              <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <input
+                type="password" id="password" name="password"
+                placeholder="Masukkan password"
+                class="input-field w-full rounded-xl pl-10 pr-10 py-3 text-sm"
+                autocomplete="current-password"
+              />
+              <button type="button" class="toggle-pass" id="toggle-pass" aria-label="Tampilkan password">
+                <!-- Eye icon -->
+                <svg id="eye-show" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <!-- Eye-off icon -->
+                <svg id="eye-hide" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
+            <p class="error-msg text-red-400 text-xs mt-1 hidden" id="pass-err"></p>
+          </div>
+
+          <!-- Remember + Forgot -->
+          <div class="flex items-center justify-between">
+            <label class="check-label flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" class="sr-only" id="remember" />
+              <span class="check-box">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+              <span class="text-white/60 text-sm">Ingat saya</span>
+            </label>
+            <a href="#" class="text-gold text-sm font-medium hover:text-gold-light transition-colors hover:underline">Lupa password?</a>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-login w-full rounded-xl py-3.5 text-sm tracking-wide mt-2">
+            <span>🎟️ Masuk ke TicketIn</span>
+          </button>
+
+          <!-- General error -->
+          <p class="text-red-400 text-xs text-center hidden" id="general-err"></p>
+
+          <!-- Divider -->
+          <div class="divider text-xs">atau lanjutkan dengan</div>
+
+          <!-- Social Login -->
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" class="btn-social flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115z"/>
+                <path fill="#34A853" d="M16.04 18.013c-1.09.703-2.474 1.078-4.04 1.078a7.077 7.077 0 0 1-6.723-4.823l-4.04 3.067A11.965 11.965 0 0 0 12 24c2.933 0 5.735-1.043 7.834-3l-3.793-2.987z"/>
+                <path fill="#4A90E2" d="M19.834 21c2.195-2.048 3.62-5.096 3.62-9 0-.71-.109-1.473-.272-2.182H12v4.637h6.436c-.317 1.559-1.17 2.766-2.395 3.558L19.834 21z"/>
+                <path fill="#FBBC05" d="M5.277 14.268A7.12 7.12 0 0 1 4.909 12c0-.782.125-1.533.357-2.235L1.24 6.65A11.934 11.934 0 0 0 0 12c0 1.92.445 3.73 1.237 5.335l4.04-3.067z"/>
+              </svg>
+              Google
+            </button>
+            <button type="button" class="btn-social flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              Facebook
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Register Link -->
+        <p class="text-center text-white/50 text-sm mt-6">
+          Belum punya akun?
+          <a href="register.html" class="text-gold font-semibold hover:text-gold-light transition-colors hover:underline ml-1">Daftar sekarang</a>
+        </p>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ══ FOOTER MINI ══ -->
+  <footer class="text-center py-5 text-white/30 text-xs border-t border-white/5">
+    © 2026 TicketIn. All rights reserved.
+    <span class="mx-2">·</span>
+    <a href="#" class="hover:text-gold transition-colors">Syarat & Ketentuan</a>
+    <span class="mx-2">·</span>
+    <a href="#" class="hover:text-gold transition-colors">Kebijakan Privasi</a>
+  </footer>
+
+  <!-- ══ SUCCESS OVERLAY ══ -->
+  <div class="success-overlay" id="success-overlay">
+    <div class="success-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+    <p class="text-white text-lg font-bold">Berhasil Masuk!</p>
+    <p class="text-white/50 text-sm">Mengalihkan ke beranda...</p>
+  </div>
+
+  <!-- ══ SCRIPTS ══ -->
+  <script>
+    // Toggle password visibility
+    const toggleBtn = document.getElementById('toggle-pass');
+    const passInput = document.getElementById('password');
+    const eyeShow   = document.getElementById('eye-show');
+    const eyeHide   = document.getElementById('eye-hide');
+
+    toggleBtn.addEventListener('click', () => {
+      const isPass = passInput.type === 'password';
+      passInput.type = isPass ? 'text' : 'password';
+      eyeShow.classList.toggle('hidden', isPass);
+      eyeHide.classList.toggle('hidden', !isPass);
+    });
+
+    // Custom checkbox
+    document.querySelectorAll('.check-label').forEach(label => {
+      const input = label.querySelector('input[type=checkbox]');
+      input.addEventListener('change', () => {
+        label.querySelector('.check-box').style.background = input.checked ? '#F5C400' : '';
+      });
+    });
+
+    // Form validation + submit
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let valid = true;
+
+      const email = document.getElementById('email');
+      const pass  = document.getElementById('password');
+      const emailErr = document.getElementById('email-err');
+      const passErr  = document.getElementById('pass-err');
+      const genErr   = document.getElementById('general-err');
+
+      // Reset errors
+      [emailErr, passErr, genErr].forEach(el => el.classList.add('hidden'));
+      [email, pass].forEach(el => el.classList.remove('shake'));
+
+      // Validate email
+      if (!email.value.trim()) {
+        showError(email, emailErr, 'Email tidak boleh kosong');
+        valid = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        showError(email, emailErr, 'Format email tidak valid');
+        valid = false;
+      }
+
+      // Validate password
+      if (!pass.value) {
+        showError(pass, passErr, 'Password tidak boleh kosong');
+        valid = false;
+      } else if (pass.value.length < 6) {
+        showError(pass, passErr, 'Password minimal 6 karakter');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Simulate login (demo)
+      const submitBtn = form.querySelector('button[type=submit]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="flex items-center justify-center gap-2"><svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"/><path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8H4z"/></svg> Memproses...</span>';
+
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>🎟️ Masuk ke TicketIn</span>';
+
+        // Show success overlay
+        document.getElementById('success-overlay').classList.add('show');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1800);
+      }, 1600);
+    });
+
+    function showError(input, errEl, msg) {
+      errEl.textContent = msg;
+      errEl.classList.remove('hidden');
+      input.classList.add('shake');
+      input.style.borderColor = '#f87171';
+      input.addEventListener('input', () => {
+        errEl.classList.add('hidden');
+        input.style.borderColor = '';
+      }, { once: true });
+    }
+  </script>
+
+</body>
+</html>
