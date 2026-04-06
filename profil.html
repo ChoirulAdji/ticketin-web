@@ -55,7 +55,7 @@
       </a>
 
       <nav class="hidden md:flex gap-8">
-        <a href="#beranda" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Beranda</a>
+        <a href="dashboard.html" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Beranda</a>
         <a href="#event" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Event</a>
         <a href="tentang.html" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Tentang</a>
         <a href="hubungi.html" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Hubungi Kami</a>
@@ -200,13 +200,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
             4 April 2026
                     </p>
-                    <p class="flex items-center gap-1">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3a9 9 0 100 18 9 9 0 000-18z" />
-  </svg>
-  19:30 WIB
-</p>
+                    
                   </div>
                   <p class="text-sm text-gray-500 flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -318,5 +312,16 @@
       activeEl.classList.add('bg-navy-mid', 'text-white', 'shadow-md', 'shadow-navy-mid/20');
     }
   </script>
+  <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // Mengecek apakah URL memiliki hash #tiket (berasal dari halaman checkout)
+    if (window.location.hash === '#tiket') {
+      // Menjalankan fungsi switchMenu ke 'tiket' secara otomatis
+      if (typeof switchMenu === 'function') {
+        switchMenu('tiket');
+      }
+    }
+  });
+</script>
 </body>
-</html>pro
+</html>
