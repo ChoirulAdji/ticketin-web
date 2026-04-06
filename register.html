@@ -28,7 +28,6 @@
       overflow-x: hidden;
     }
 
-    /* Blobs */
     .bg-blob {
       position: fixed;
       border-radius: 50%;
@@ -45,7 +44,6 @@
       50%       { transform: translateY(-28px) scale(1.05); }
     }
 
-    /* Glass card */
     .glass-card {
       background: rgba(16, 42, 113, 0.45);
       backdrop-filter: blur(24px);
@@ -53,7 +51,6 @@
       box-shadow: 0 32px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
-    /* Inputs */
     .input-field {
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(255,255,255,0.12);
@@ -68,6 +65,24 @@
       box-shadow: 0 0 0 4px rgba(245,196,0,0.1);
     }
 
+    .select-field {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
+      transition: all 0.3s ease;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+    .select-field option { background: #102A71; color: white; }
+    .select-field:focus {
+      border-color: #F5C400;
+      background: rgba(245,196,0,0.06);
+      box-shadow: 0 0 0 4px rgba(245,196,0,0.1);
+      color: white;
+    }
+
     .input-group { position: relative; }
     .input-icon {
       position: absolute; left: 14px; top: 50%;
@@ -76,7 +91,6 @@
       transition: color 0.3s;
       pointer-events: none;
     }
-    .input-field:focus ~ .input-icon-right,
     .input-group:focus-within .input-icon { color: #F5C400; }
 
     .toggle-pass {
@@ -89,7 +103,6 @@
     }
     .toggle-pass:hover { color: #F5C400; }
 
-    /* Password strength */
     .strength-bar {
       height: 4px;
       border-radius: 99px;
@@ -101,7 +114,6 @@
     .strength-bar.medium { background: #f59e0b; }
     .strength-bar.strong { background: #22c55e; }
 
-    /* Button */
     .btn-register {
       background: linear-gradient(135deg, #F5C400 0%, #FFDC5F 100%);
       color: #001840;
@@ -121,7 +133,6 @@
     .btn-register:active { transform: translateY(0); }
     .btn-register:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
-    /* Social */
     .btn-social {
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(255,255,255,0.12);
@@ -135,11 +146,9 @@
       transform: translateY(-1px);
     }
 
-    /* Divider */
     .divider { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.3); font-size: 12px; }
     .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
 
-    /* Checkbox */
     .check-label input:checked ~ .check-box { background: #F5C400; border-color: #F5C400; }
     .check-box {
       width: 18px; height: 18px;
@@ -152,7 +161,6 @@
     .check-box svg { opacity: 0; transition: opacity 0.2s; }
     .check-label input:checked ~ .check-box svg { opacity: 1; }
 
-    /* Nav link */
     .nav-link { position: relative; }
     .nav-link::after {
       content: ''; position: absolute; bottom: -4px; left: 0;
@@ -161,7 +169,6 @@
     }
     .nav-link:hover::after { width: 100%; }
 
-    /* Animations */
     .card-enter {
       animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
@@ -182,7 +189,6 @@
     .stagger > *:nth-child(9) { animation-delay: 0.60s; }
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-    /* Step indicator */
     .step-dot {
       width: 10px; height: 10px;
       border-radius: 50%;
@@ -194,11 +200,9 @@
     .step-line { flex: 1; height: 2px; background: rgba(255,255,255,0.1); transition: background 0.4s; }
     .step-line.done { background: rgba(245,196,0,0.4); }
 
-    /* Step panels */
     .step-panel { display: none; }
     .step-panel.active { display: block; }
 
-    /* Success overlay */
     .success-overlay {
       position: fixed; inset: 0; z-index: 100;
       background: rgba(0,24,64,0.96);
@@ -220,10 +224,8 @@
       100% { box-shadow: 0 0 0 0 rgba(245,196,0,0); }
     }
 
-    /* Ticket deco */
     .ticket-deco { position: absolute; opacity: 0.04; pointer-events: none; }
 
-    /* Phone input */
     .phone-prefix {
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(255,255,255,0.12);
@@ -236,35 +238,63 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .phone-input {
-      border-radius: 0 12px 12px 0 !important;
-    }
+    .phone-input { border-radius: 0 12px 12px 0 !important; }
 
-    /* Select field */
-    .select-field {
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.7);
-      transition: all 0.3s ease;
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      cursor: pointer;
-    }
-    .select-field option { background: #102A71; color: white; }
-    .select-field:focus {
-      border-color: #F5C400;
-      background: rgba(245,196,0,0.06);
-      box-shadow: 0 0 0 4px rgba(245,196,0,0.1);
-      color: white;
-    }
-
-    /* Progress bar */
     .progress-bar-fill {
       height: 100%;
       border-radius: 99px;
       background: linear-gradient(90deg, #F5C400, #FFDC5F);
       transition: width 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    /* Pengelola section */
+    .pengelola-section {
+      border-top: 1px solid rgba(245,196,0,0.15);
+      margin-top: 20px;
+      padding-top: 18px;
+      display: none;
+      animation: fadeUp 0.4s ease forwards;
+    }
+    .pengelola-section.show { display: block; }
+
+    .section-divider-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: rgba(245,196,0,0.7);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-divider-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(245,196,0,0.15);
+    }
+
+    .upload-box {
+      border: 1.5px dashed rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(255,255,255,0.03);
+      transition: all 0.3s;
+    }
+    .upload-box:hover {
+      border-color: rgba(245,196,0,0.4);
+      background: rgba(245,196,0,0.04);
+    }
+    .upload-box input { display: none; }
+    .upload-label { display: block; cursor: pointer; }
+
+    .hint-text {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 4px;
     }
   </style>
 </head>
@@ -274,7 +304,8 @@
   <div class="bg-blob bg-blob-2"></div>
   <div class="bg-blob bg-blob-3"></div>
 
-  <header class="fixed top-0 left-0 w-full bg-navy-mid text-white shadow-lg z-50">    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <header class="fixed top-0 left-0 w-full bg-navy-mid text-white shadow-lg z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <a href="index.html" class="flex items-center gap-2 group">
         <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center group-hover:bg-gold-light transition-all duration-300">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -328,6 +359,8 @@
         </div>
 
         <form id="register-form">
+
+          <!-- ───────────── STEP 1 ───────────── -->
           <div class="step-panel active stagger" id="step-1">
             <p class="text-gold text-xs font-semibold tracking-widest uppercase mb-4">Langkah 1 — Info Akun</p>
             <div class="space-y-4">
@@ -364,19 +397,160 @@
                 <label class="block text-white/70 text-xs font-semibold mb-2 tracking-wide uppercase">Daftar Sebagai</label>
                 <div class="grid grid-cols-2 gap-3">
                   <label class="cursor-pointer">
-                    <input type="radio" name="role" value="pembeli" class="peer sr-only" checked />
+                    <input type="radio" name="role" value="pembeli" id="role-pembeli" class="peer sr-only" checked />
                     <div class="rounded-xl py-2.5 text-center text-sm font-medium border border-white/15 text-white/60 peer-checked:border-gold peer-checked:bg-gold/10 peer-checked:text-gold transition-all duration-200">
                       🎟️ Pembeli
                     </div>
                   </label>
                   <label class="cursor-pointer">
-                    <input type="radio" name="role" value="pengelola" class="peer sr-only" />
+                    <input type="radio" name="role" value="pengelola" id="role-pengelola" class="peer sr-only" />
                     <div class="rounded-xl py-2.5 text-center text-sm font-medium border border-white/15 text-white/60 peer-checked:border-gold peer-checked:bg-gold/10 peer-checked:text-gold transition-all duration-200">
                       🏢 Pengelola
                     </div>
                   </label>
                 </div>
               </div>
+
+              <!-- ═══════ PENGELOLA FIELDS ═══════ -->
+              <div class="pengelola-section" id="pengelola-section">
+
+                <div class="section-divider-label">Info Organisasi / EO</div>
+
+                <div class="space-y-4">
+
+                  <div>
+                    <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Nama Organisasi / EO</label>
+                    <div class="input-group">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      <input type="text" id="nama-org" name="nama_organisasi" placeholder="PT Kreatif Nusantara / @NamaEO" class="input-field w-full rounded-xl pl-10 pr-4 py-3 text-sm" />
+                    </div>
+                    <p class="hint-text">Nama yang ditampilkan publik pada halaman event kamu.</p>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Jenis Entitas</label>
+                      <div class="input-group relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <select id="jenis-entitas" name="jenis_entitas" class="select-field w-full rounded-xl pl-10 pr-8 py-3 text-sm">
+                          <option value="">Pilih tipe</option>
+                          <option value="perorangan">Perorangan</option>
+                          <option value="cv">CV / Firma</option>
+                          <option value="pt">PT</option>
+                          <option value="yayasan">Yayasan / NGO</option>
+                          <option value="komunitas">Komunitas</option>
+                        </select>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white/35 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Skala Event</label>
+                      <div class="input-group relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <select id="skala-event" name="skala_event" class="select-field w-full rounded-xl pl-10 pr-8 py-3 text-sm">
+                          <option value="">Pilih skala</option>
+                          <option value="kecil">Kecil (&lt;100)</option>
+                          <option value="menengah">Menengah (100–1K)</option>
+                          <option value="besar">Besar (&gt;1.000)</option>
+                        </select>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white/35 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Alamat Resmi Organisasi</label>
+                    <div class="input-group">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <input type="text" id="alamat-org" name="alamat_organisasi" placeholder="Jl. Basuki Rahmat No. 10, Surabaya" class="input-field w-full rounded-xl pl-10 pr-4 py-3 text-sm" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Website / Media Sosial</label>
+                    <div class="input-group">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                      <input type="url" id="website-org" name="website" placeholder="https://instagram.com/namaeo" class="input-field w-full rounded-xl pl-10 pr-4 py-3 text-sm" />
+                    </div>
+                  </div>
+
+                  <div class="section-divider-label" style="margin-top:18px;">Verifikasi & Keuangan</div>
+
+                  <div>
+                    <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">NPWP <span class="text-white/30 normal-case font-normal">(opsional)</span></label>
+                    <div class="input-group">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2" />
+                      </svg>
+                      <input type="text" id="npwp" name="npwp" placeholder="00.000.000.0-000.000" class="input-field w-full rounded-xl pl-10 pr-4 py-3 text-sm" />
+                    </div>
+                    <p class="hint-text">Wajib diisi jika pencairan dana &gt; Rp 5 juta per transaksi.</p>
+                  </div>
+
+                  <div>
+                    <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Upload Dokumen Legalitas</label>
+                    <div class="upload-box" onclick="document.getElementById('doc-upload').click()">
+                      <label class="upload-label">
+                        <input type="file" id="doc-upload" name="dokumen_legalitas" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(this)" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white/25 mx-auto mb-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p class="text-white/40 text-xs" id="upload-label-text">KTP / Akta pendirian / SIUP</p>
+                        <p class="text-white/20 text-xs mt-0.5">PDF, JPG, PNG · maks. 5 MB</p>
+                      </label>
+                    </div>
+                    <p class="hint-text">Digunakan untuk verifikasi akun dan proses pencairan dana.</p>
+                  </div>
+
+                  <div>
+                    <label class="block text-white/70 text-xs font-semibold mb-1.5 tracking-wide uppercase">Rekening Bank Pencairan Dana</label>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                      <div class="input-group relative">
+                        <select id="bank" name="bank" class="select-field w-full rounded-xl pl-4 pr-8 py-3 text-sm">
+                          <option value="">Pilih bank</option>
+                          <option value="bca">BCA</option>
+                          <option value="bni">BNI</option>
+                          <option value="bri">BRI</option>
+                          <option value="mandiri">Mandiri</option>
+                          <option value="bsi">BSI</option>
+                          <option value="cimb">CIMB Niaga</option>
+                          <option value="lain">Bank lainnya</option>
+                        </select>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white/35 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                      <div class="input-group">
+                        <input type="text" id="no-rek" name="nomor_rekening" placeholder="No. rekening" class="input-field w-full rounded-xl px-4 py-3 text-sm" />
+                      </div>
+                    </div>
+                    <div class="input-group">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <input type="text" id="nama-rek" name="nama_rekening" placeholder="Nama pemilik rekening (sesuai KTP)" class="input-field w-full rounded-xl pl-10 pr-4 py-3 text-sm" />
+                    </div>
+                    <p class="hint-text">Pastikan nama rekening sesuai dengan identitas terdaftar.</p>
+                  </div>
+
+                </div>
+              </div>
+              <!-- ═══════ END PENGELOLA FIELDS ═══════ -->
 
             </div>
 
@@ -385,6 +559,7 @@
             </button>
           </div>
 
+          <!-- ───────────── STEP 2 ───────────── -->
           <div class="step-panel" id="step-2">
             <p class="text-gold text-xs font-semibold tracking-widest uppercase mb-4">Langkah 2 — Keamanan</p>
             <div class="space-y-4">
@@ -436,6 +611,7 @@
             </div>
           </div>
 
+          <!-- ───────────── STEP 3 ───────────── -->
           <div class="step-panel" id="step-3">
             <p class="text-gold text-xs font-semibold tracking-widest uppercase mb-4">Langkah 3 — Profil</p>
             <div class="space-y-4">
@@ -516,6 +692,7 @@
               </button>
             </div>
           </div>
+
         </form>
 
         <p class="text-center text-white/50 text-sm mt-6">
@@ -550,97 +727,105 @@
     let currentStep = 1;
     const TOTAL_STEPS = 3;
 
+    // ── Toggle pengelola section saat role berubah ──
+    document.querySelectorAll('input[name="role"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const section = document.getElementById('pengelola-section');
+        if (radio.value === 'pengelola' && radio.checked) {
+          section.classList.add('show');
+        } else {
+          section.classList.remove('show');
+        }
+      });
+    });
+
+    // ── Update nama file setelah upload ──
+    function updateFileName(input) {
+      const label = document.getElementById('upload-label-text');
+      if (input.files && input.files[0]) {
+        label.textContent = input.files[0].name;
+        label.style.color = 'rgba(245,196,0,0.8)';
+      } else {
+        label.textContent = 'KTP / Akta pendirian / SIUP';
+        label.style.color = '';
+      }
+    }
+
     // ── Step navigation ──
     function goStep(step) {
       document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('step-' + step).classList.add('active');
 
-      // Dots
       for (let i = 1; i <= TOTAL_STEPS; i++) {
         const dot = document.getElementById('dot-' + i);
         dot.classList.remove('active', 'done');
         if (i < step)  dot.classList.add('done');
         if (i === step) dot.classList.add('active');
       }
-      
-      // Lines
+
       for (let i = 1; i < TOTAL_STEPS; i++) {
         const line = document.getElementById('line-' + i);
         line.classList.toggle('done', i < step);
       }
-      
-      // Progress bar (Completed Script)
+
       const pct = ((step - 1) / (TOTAL_STEPS - 1)) * 100;
       document.getElementById('progress-fill').style.width = pct + '%';
     }
 
     function nextStep(step) {
-        if(step < TOTAL_STEPS) {
-            currentStep = step + 1;
-            goStep(currentStep);
-        }
+      if (step < TOTAL_STEPS) {
+        currentStep = step + 1;
+        goStep(currentStep);
+      }
     }
 
     function prevStep(step) {
-        if(step > 1) {
-            currentStep = step - 1;
-            goStep(currentStep);
-        }
+      if (step > 1) {
+        currentStep = step - 1;
+        goStep(currentStep);
+      }
     }
 
     // ── Toggle Password ──
     function togglePw(inputId, eyeOpenId, eyeClosedId) {
-        const input = document.getElementById(inputId);
-        const eyeOpen = document.getElementById(eyeOpenId);
-        const eyeClosed = document.getElementById(eyeClosedId);
-
-        if (input.type === "password") {
-            input.type = "text";
-            eyeOpen.classList.add("hidden");
-            eyeClosed.classList.remove("hidden");
-        } else {
-            input.type = "password";
-            eyeOpen.classList.remove("hidden");
-            eyeClosed.classList.add("hidden");
-        }
+      const input = document.getElementById(inputId);
+      const eyeOpen = document.getElementById(eyeOpenId);
+      const eyeClosed = document.getElementById(eyeClosedId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeOpen.classList.add('hidden');
+        eyeClosed.classList.remove('hidden');
+      } else {
+        input.type = 'password';
+        eyeOpen.classList.remove('hidden');
+        eyeClosed.classList.add('hidden');
+      }
     }
 
-    // ── Password Strength Simple Checker ──
+    // ── Password Strength ──
     function checkStrength() {
-        const pass = document.getElementById('reg-pass').value;
-        const bars = [
-            document.getElementById('bar1'),
-            document.getElementById('bar2'),
-            document.getElementById('bar3'),
-            document.getElementById('bar4')
-        ];
-        
-        // Reset
-        bars.forEach(bar => bar.className = 'strength-bar');
-
-        if(pass.length > 0) bars[0].classList.add('weak');
-        if(pass.length > 4) bars[1].classList.add('weak');
-        if(pass.length > 6) {
-            bars[0].className = 'strength-bar medium';
-            bars[1].className = 'strength-bar medium';
-            bars[2].classList.add('medium');
-        }
-        if(pass.length >= 8 && /[a-zA-Z]/.test(pass) && /[0-9]/.test(pass)) {
-            bars.forEach(bar => bar.className = 'strength-bar strong');
-        }
+      const pass = document.getElementById('reg-pass').value;
+      const bars = ['bar1','bar2','bar3','bar4'].map(id => document.getElementById(id));
+      bars.forEach(b => b.className = 'strength-bar');
+      if (pass.length > 0) bars[0].classList.add('weak');
+      if (pass.length > 4) bars[1].classList.add('weak');
+      if (pass.length > 6) {
+        bars[0].className = 'strength-bar medium';
+        bars[1].className = 'strength-bar medium';
+        bars[2].classList.add('medium');
+      }
+      if (pass.length >= 8 && /[a-zA-Z]/.test(pass) && /[0-9]/.test(pass)) {
+        bars.forEach(b => b.className = 'strength-bar strong');
+      }
     }
 
-    // ── Submit Form ──
+    // ── Submit ──
     function submitForm() {
-        // Tampilkan overlay sukses
-        document.getElementById('success-overlay').classList.add('show');
-        
-        // Simulasi redirect setelah 3 detik
-        setTimeout(() => {
-            // Hilangkan centang ini saat nanti mengkoneksikan dengan PHP
-            // window.location.href = 'login.html'; 
-            console.log("Form submitted!");
-        }, 3000);
+      document.getElementById('success-overlay').classList.add('show');
+      setTimeout(() => {
+        // window.location.href = 'login.html';
+        console.log('Form submitted!');
+      }, 3000);
     }
   </script>
 </body>
