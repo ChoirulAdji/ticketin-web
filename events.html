@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TicketIn — Semua Event</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{colors:{navy:{deep:'#001840',mid:'#102A71'},gold:{DEFAULT:'#F5C400',light:'#FFDC5F'}},fontFamily:{poppins:['Poppins','sans-serif']}}}}</script>
+  <style>
+    *{font-family:'Poppins',sans-serif;}html{scroll-behavior:smooth;}
+    .nav-link{position:relative;}.nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:#F5C400;transition:width .3s ease;}.nav-link:hover::after{width:100%;}
+    #mobile-menu{max-height:0;overflow:hidden;transition:max-height .4s ease;}#mobile-menu.open{max-height:400px;}
+    .event-card{transition:transform .3s ease,box-shadow .3s ease;}.event-card:hover{transform:translateY(-5px) scale(1.01);box-shadow:0 20px 40px rgba(0,24,64,.13);}
+    .chip{transition:all .2s ease;cursor:pointer;user-select:none;}.chip.active{background:#102A71 !important;color:#fff !important;border-color:#102A71 !important;}
+    .search-wrap input:focus{outline:none;border-color:#F5C400;box-shadow:0 0 0 3px rgba(245,196,0,.15);}
+    .filter-check input:checked+.check-ui{background:#102A71;border-color:#102A71;}
+    .check-ui{width:18px;height:18px;border:1.5px solid #cbd5e1;border-radius:4px;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .check-ui svg{opacity:0;transition:opacity .2s;}.filter-check input:checked+.check-ui svg{opacity:1;}
+    input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:99px;background:linear-gradient(to right,#102A71 0%,#102A71 var(--val,100%),#e2e8f0 var(--val,100%),#e2e8f0 100%);outline:none;}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#F5C400;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);}
+    @keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(245,196,0,.5);}50%{box-shadow:0 0 0 6px rgba(245,196,0,0);}}.badge-hot{animation:badgePulse 2s infinite;}
+    .filter-overlay{position:fixed;inset:0;background:rgba(0,24,64,.5);backdrop-filter:blur(4px);z-index:40;opacity:0;pointer-events:none;transition:opacity .3s;}.filter-overlay.show{opacity:1;pointer-events:all;}
+    .filter-drawer{position:fixed;left:0;bottom:0;width:100%;max-height:85vh;background:#fff;border-radius:20px 20px 0 0;z-index:50;transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.2,.64,1);overflow-y:auto;}.filter-drawer.open{transform:translateY(0);}
+    .footer-link{transition:color .2s,padding-left .2s;}.footer-link:hover{color:#F5C400;padding-left:4px;}
+    .pay-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;color:#fff;transition:background .2s;}.pay-badge:hover{background:rgba(245,196,0,.15);border-color:#F5C400;color:#F5C400;}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23102A71'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px;-webkit-appearance:none;appearance:none;}
+    .page-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all .2s;cursor:pointer;border:1.5px solid #e2e8f0;color:#64748b;}.page-btn.active{background:#102A71;color:#fff;border-color:#102A71;}.page-btn:not(.active):hover{background:#f1f5f9;border-color:#cbd5e1;}
+  </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- NAVBAR -->
+<header class="fixed top-0 left-0 w-full bg-navy-mid text-white shadow-lg z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="dashboard.html" class="flex items-center gap-2 group">
+      <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center group-hover:bg-gold-light transition-all duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+      </div>
+      <span class="text-xl font-bold tracking-tight">TicketIn</span>
+    </a>
+    <nav class="hidden md:flex gap-8">
+      <a href="dashboard.html" class="nav-link hover:text-gold transition-colors font-medium">Beranda</a>
+      <a href="events.html" class="nav-link text-gold font-semibold">Event</a>
+      <a href="kategori.html" class="nav-link hover:text-gold transition-colors font-medium">Kategori</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="login.html" class="bg-gold text-navy-deep px-5 py-2 rounded-lg font-semibold hover:bg-gold-light transition-all text-sm">Masuk</a>
+      <button id="menu-btn" class="md:hidden p-1"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+  </div>
+  <div id="mobile-menu" class="bg-navy-mid border-t border-white/10">
+    <nav class="flex flex-col px-6 py-4 gap-3 text-sm">
+      <a href="dashboard.html" class="hover:text-gold transition font-medium">Beranda</a>
+      <a href="events.html" class="text-gold font-semibold">Event</a>
+      <a href="kategori.html" class="hover:text-gold transition font-medium">Kategori</a>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE HEADER -->
+<section class="pt-[72px] bg-navy-mid text-white">
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <p class="text-gold text-xs font-semibold tracking-widest uppercase mb-1">Jelajahi</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold">Semua Event</h1>
+        <p class="text-white/60 mt-1 text-sm">Menampilkan <span id="count-num">12</span> event ditemukan</p>
+      </div>
+      <div class="search-wrap w-full md:w-80">
+        <div class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="search-input" type="text" placeholder="Cari nama event, kota..." class="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-4 py-2.5 text-white text-sm placeholder-white/40 transition-all focus:outline-none focus:border-gold"/>
+        </div>
+      </div>
+    </div>
+    <!-- Category chips -->
+    <div class="flex flex-wrap gap-2 mt-5">
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10 active" data-cat="all">Semua</button>
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10" data-cat="musik">🎵 Musik</button>
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10" data-cat="seminar">💡 Seminar</button>
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10" data-cat="workshop">🎨 Workshop</button>
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10" data-cat="olahraga">🏃 Olahraga</button>
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10" data-cat="budaya">🎭 Budaya</button>
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10" data-cat="hiburan">🎤 Hiburan</button>
+      <button class="chip text-xs font-semibold px-4 py-1.5 rounded-full border border-white/25 text-white/80 bg-white/10" data-cat="pameran">🖼️ Pameran</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="max-w-7xl mx-auto px-6 py-8">
+  <div class="flex gap-8">
+
+    <!-- SIDEBAR -->
+    <aside class="hidden lg:block w-56 flex-shrink-0">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-24">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="font-bold text-navy-deep text-sm">Filter</h3>
+          <button id="clear-filters" class="text-xs text-navy-mid hover:text-gold transition-colors font-medium">Reset</button>
+        </div>
+        <!-- Kota -->
+        <p class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-3">Kota</p>
+        <div class="space-y-2.5 mb-5" id="kota-filter">
+          <label class="filter-check flex items-center gap-2.5 cursor-pointer select-none text-sm text-gray-600 hover:text-navy-deep"><input type="checkbox" class="sr-only" value="surabaya"/><span class="check-ui"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Surabaya</label>
+          <label class="filter-check flex items-center gap-2.5 cursor-pointer select-none text-sm text-gray-600 hover:text-navy-deep"><input type="checkbox" class="sr-only" value="jakarta"/><span class="check-ui"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Jakarta</label>
+          <label class="filter-check flex items-center gap-2.5 cursor-pointer select-none text-sm text-gray-600 hover:text-navy-deep"><input type="checkbox" class="sr-only" value="bandung"/><span class="check-ui"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Bandung</label>
+          <label class="filter-check flex items-center gap-2.5 cursor-pointer select-none text-sm text-gray-600 hover:text-navy-deep"><input type="checkbox" class="sr-only" value="bali"/><span class="check-ui"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Bali</label>
+          <label class="filter-check flex items-center gap-2.5 cursor-pointer select-none text-sm text-gray-600 hover:text-navy-deep"><input type="checkbox" class="sr-only" value="yogyakarta"/><span class="check-ui"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Yogyakarta</label>
+        </div>
+        <hr class="border-gray-100 mb-5"/>
+        <!-- Harga -->
+        <p class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-3">Harga Tiket</p>
+        <input type="range" id="price-range" min="0" max="500" value="500" step="10" class="w-full"/>
+        <div class="flex justify-between text-xs text-gray-400 mt-1 mb-5"><span>Gratis</span><span id="price-label" class="text-navy-mid font-semibold">Rp500rb+</span></div>
+        <hr class="border-gray-100 mb-5"/>
+        <!-- Gratis saja -->
+        <p class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-3">Lainnya</p>
+        <label class="filter-check flex items-center gap-2.5 cursor-pointer select-none text-sm text-gray-600 hover:text-navy-deep" id="free-only-label">
+          <input type="checkbox" class="sr-only" id="free-only"/><span class="check-ui"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Gratis saja
+        </label>
+      </div>
+    </aside>
+
+    <!-- EVENTS -->
+    <div class="flex-1 min-w-0">
+      <!-- Toolbar -->
+      <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+        <button id="mobile-filter-btn" class="lg:hidden flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-semibold text-navy-deep shadow-sm hover:border-navy-mid transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707l-6 6A1 1 0 0014 13v5a1 1 0 01-.553.894l-4 2A1 1 0 018 20v-7a1 1 0 01.293-.707l6-6A1 1 0 0015 6V5H4a1 1 0 01-1-1V4z"/></svg>
+          Filter
+        </button>
+        <div class="flex items-center gap-3 ml-auto">
+          <span class="text-gray-400 text-sm hidden sm:block" id="showing-text">12 event</span>
+          <select id="sort-select" class="bg-white border border-gray-200 rounded-xl px-3 py-2 pr-8 text-sm font-medium text-navy-deep focus:outline-none focus:border-navy-mid cursor-pointer">
+            <option value="newest">Terbaru</option>
+            <option value="price-asc">Harga Terendah</option>
+            <option value="price-desc">Harga Tertinggi</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="events-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+
+      <!-- Empty -->
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+        <div class="w-20 h-20 bg-navy-mid/5 rounded-full flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-navy-mid/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="text-navy-deep font-bold text-lg">Event tidak ditemukan</p>
+        <p class="text-gray-400 text-sm mt-1">Coba ubah kata kunci atau filter</p>
+        <button onclick="resetAll()" class="mt-5 bg-navy-mid text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-navy-deep transition-colors">Reset Filter</button>
+      </div>
+
+      <div id="pagination" class="flex items-center justify-center gap-1.5 mt-10"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE FILTER DRAWER -->
+<div class="filter-overlay" id="filter-overlay"></div>
+<div class="filter-drawer" id="filter-drawer">
+  <div class="p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-bold text-navy-deep">Filter Event</h3>
+      <button id="close-drawer" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-3">Kota</p>
+    <div class="flex flex-wrap gap-2 mb-5">
+      <button class="mob-kota chip text-xs font-semibold px-4 py-1.5 rounded-full border border-gray-200 text-gray-600" data-val="surabaya">Surabaya</button>
+      <button class="mob-kota chip text-xs font-semibold px-4 py-1.5 rounded-full border border-gray-200 text-gray-600" data-val="jakarta">Jakarta</button>
+      <button class="mob-kota chip text-xs font-semibold px-4 py-1.5 rounded-full border border-gray-200 text-gray-600" data-val="bandung">Bandung</button>
+      <button class="mob-kota chip text-xs font-semibold px-4 py-1.5 rounded-full border border-gray-200 text-gray-600" data-val="bali">Bali</button>
+      <button class="mob-kota chip text-xs font-semibold px-4 py-1.5 rounded-full border border-gray-200 text-gray-600" data-val="yogyakarta">Yogyakarta</button>
+    </div>
+    <hr class="mb-5"/>
+    <p class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-2">Harga Maks</p>
+    <input type="range" id="mob-price-range" min="0" max="500" value="500" step="10" class="w-full mb-1"/>
+    <div class="flex justify-between text-xs text-gray-400 mb-5"><span>Gratis</span><span id="mob-price-label" class="text-navy-mid font-semibold">Rp500rb+</span></div>
+    <button id="apply-mob-filter" class="w-full bg-navy-mid text-white rounded-xl py-3 font-bold text-sm hover:bg-navy-deep transition-colors">Terapkan Filter</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-navy-deep text-white mt-16">
+  <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row gap-8 justify-between">
+    <div>
+      <div class="flex items-center gap-2 mb-3"><div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg></div><span class="text-xl font-bold">TicketIn</span></div>
+      <p class="text-white/60 text-sm">Platform tiket event terpercaya di Indonesia.</p>
+    </div>
+    <div><h4 class="font-semibold text-gold mb-3 text-sm uppercase tracking-wider">Pembayaran</h4><div class="flex flex-wrap gap-2"><span class="pay-badge">BCA</span><span class="pay-badge">OVO</span><span class="pay-badge">GoPay</span><span class="pay-badge">QRIS</span></div></div>
+  </div>
+  <div class="border-t border-navy-mid"><div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between text-sm text-white/40"><p>© 2026 TicketIn.</p><div class="flex gap-4"><a href="#" class="hover:text-gold">Syarat & Ketentuan</a></div></div></div>
+</footer>
+
+<script>
+const allEvents=[
+  {id:1,title:"Titik Temu Fest",cat:"musik",kota:"surabaya",date:"4 Apr 2026",price:50000,priceLabel:"Rp50.000",img:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=80",badge:"🔥 Populer",hot:true},
+  {id:2,title:"Tech Innovation Summit",cat:"seminar",kota:"jakarta",date:"20 Mei 2026",price:75000,priceLabel:"Rp75.000",img:"https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=400&q=80",badge:"📈 Trending",hot:false},
+  {id:3,title:"Creative Design Workshop",cat:"workshop",kota:"yogyakarta",date:"28 Mei 2026",price:120000,priceLabel:"Rp120.000",img:"https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&q=80",badge:null,hot:false},
+  {id:4,title:"Surabaya Marathon 2026",cat:"olahraga",kota:"surabaya",date:"1 Jun 2026",price:200000,priceLabel:"Rp200.000",img:"https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=80",badge:"🆕 Baru",hot:false},
+  {id:5,title:"Festival Budaya Nusantara",cat:"budaya",kota:"bandung",date:"5 Jun 2026",price:30000,priceLabel:"Rp30.000",img:"https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80",badge:"🔥 Populer",hot:true},
+  {id:6,title:"Electronic Dance Festival",cat:"hiburan",kota:"bali",date:"14 Jun 2026",price:180000,priceLabel:"Rp180.000",img:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80",badge:"📈 Trending",hot:false},
+  {id:7,title:"Wedding Expo Indonesia",cat:"pameran",kota:"jakarta",date:"21 Jun 2026",price:0,priceLabel:"Gratis",img:"https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&q=80",badge:"🎁 Gratis",hot:false},
+  {id:8,title:"Stand Up Comedy Gala",cat:"hiburan",kota:"surabaya",date:"28 Jun 2026",price:95000,priceLabel:"Rp95.000",img:"https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&q=80",badge:"📈 Trending",hot:false},
+  {id:9,title:"Jazz Under The Stars",cat:"musik",kota:"bandung",date:"5 Jul 2026",price:150000,priceLabel:"Rp150.000",img:"https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=400&q=80",badge:null,hot:false},
+  {id:10,title:"Startup Pitch Battle",cat:"seminar",kota:"jakarta",date:"12 Jul 2026",price:0,priceLabel:"Gratis",img:"https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&q=80",badge:"🎁 Gratis",hot:false},
+  {id:11,title:"Bali Art & Culture Week",cat:"budaya",kota:"bali",date:"19 Jul 2026",price:45000,priceLabel:"Rp45.000",img:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=80",badge:"🔥 Populer",hot:true},
+  {id:12,title:"Yoga & Wellness Festival",cat:"olahraga",kota:"yogyakarta",date:"26 Jul 2026",price:85000,priceLabel:"Rp85.000",img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",badge:null,hot:false},
+];
+const PER_PAGE=9;
+let activePage=1,activeKota=[],maxPrice=500,freeOnly=false,activeSearch='',activeSort='newest',activeCat='all';
+
+function filtered(){
+  let list=[...allEvents];
+  if(activeCat!=='all') list=list.filter(e=>e.cat===activeCat);
+  if(activeSearch) list=list.filter(e=>e.title.toLowerCase().includes(activeSearch)||e.kota.toLowerCase().includes(activeSearch));
+  if(activeKota.length) list=list.filter(e=>activeKota.includes(e.kota));
+  if(freeOnly) list=list.filter(e=>e.price===0);
+  else list=list.filter(e=>e.price/1000<=maxPrice);
+  if(activeSort==='price-asc') list.sort((a,b)=>a.price-b.price);
+  else if(activeSort==='price-desc') list.sort((a,b)=>b.price-a.price);
+  return list;
+}
+
+function render(){
+  const list=filtered();
+  const grid=document.getElementById('events-grid');
+  const empty=document.getElementById('empty-state');
+  document.getElementById('count-num').textContent=list.length;
+  document.getElementById('showing-text').textContent=list.length+' event';
+  if(!list.length){grid.innerHTML='';empty.style.display='flex';document.getElementById('pagination').innerHTML='';return;}
+  empty.style.display='none';
+  const total=Math.ceil(list.length/PER_PAGE);
+  if(activePage>total) activePage=total;
+  const paged=list.slice((activePage-1)*PER_PAGE,activePage*PER_PAGE);
+  grid.innerHTML=paged.map(e=>`
+    <article class="event-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer group relative" onclick="location.href='event-detail.html?id=${e.id}'">
+      ${e.badge?`<span class="absolute top-3 right-3 z-10 bg-gold text-navy-deep text-xs font-bold px-3 py-1 rounded-full ${e.hot?'badge-hot':''}">${e.badge}</span>`:''}
+      <div class="overflow-hidden h-44"><img src="${e.img}" alt="${e.title}" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy"/></div>
+      <div class="p-4">
+        <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium capitalize">${e.cat}</span>
+        <h3 class="font-bold text-navy-deep text-sm mt-2 leading-snug">${e.title}</h3>
+        <p class="text-xs text-gray-400 mt-1.5 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>${e.date}</p>
+        <p class="text-xs text-gray-500 mt-0.5 flex items-center gap-1 capitalize"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>${e.kota}</p>
+        <div class="flex items-center justify-between mt-3">
+          <p class="text-navy-mid font-bold text-sm">${e.priceLabel}</p>
+          <button onclick="event.stopPropagation();location.href='event-detail.html?id=${e.id}'" class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all">${e.price===0?'Daftar':'Beli'}</button>
+        </div>
+      </div>
+    </article>`).join('');
+  // pagination
+  if(total<=1){document.getElementById('pagination').innerHTML='';return;}
+  let pg='';
+  for(let i=1;i<=total;i++) pg+=`<button class="page-btn${i===activePage?' active':''}" onclick="goPage(${i})">${i}</button>`;
+  document.getElementById('pagination').innerHTML=`<button class="page-btn" onclick="goPage(${activePage-1})"${activePage===1?' disabled style="opacity:.35;cursor:default"':''}>‹</button>${pg}<button class="page-btn" onclick="goPage(${activePage+1})"${activePage===total?' disabled style="opacity:.35;cursor:default"':''}>›</button>`;
+}
+function goPage(p){const t=Math.ceil(filtered().length/PER_PAGE);if(p<1||p>t)return;activePage=p;render();window.scrollTo({top:280,behavior:'smooth'});}
+function resetAll(){activeCat='all';activeKota=[];maxPrice=500;freeOnly=false;activeSearch='';activeSort='newest';activePage=1;
+  document.getElementById('search-input').value='';document.getElementById('price-range').value=500;document.getElementById('price-label').textContent='Rp500rb+';document.getElementById('sort-select').value='newest';
+  document.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('active'));document.querySelector('[data-cat=all]').classList.add('active');
+  document.querySelectorAll('.filter-check input').forEach(i=>i.checked=false);document.getElementById('free-only').checked=false;render();}
+
+document.querySelectorAll('[data-cat]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeCat=btn.dataset.cat;activePage=1;render();}));
+document.getElementById('search-input').addEventListener('input',e=>{activeSearch=e.target.value.toLowerCase().trim();activePage=1;render();});
+document.getElementById('sort-select').addEventListener('change',e=>{activeSort=e.target.value;activePage=1;render();});
+document.querySelectorAll('#kota-filter .filter-check input').forEach(inp=>inp.addEventListener('change',()=>{if(inp.checked)activeKota.push(inp.value);else activeKota=activeKota.filter(v=>v!==inp.value);activePage=1;render();}));
+document.getElementById('free-only').addEventListener('change',e=>{freeOnly=e.target.checked;activePage=1;render();});
+const pr=document.getElementById('price-range');
+pr.addEventListener('input',()=>{maxPrice=+pr.value;pr.style.setProperty('--val',(maxPrice/500*100)+'%');document.getElementById('price-label').textContent=maxPrice>=500?'Rp500rb+':'Rp'+maxPrice+'rb';activePage=1;render();});
+pr.style.setProperty('--val','100%');
+// Mobile filter
+const overlay=document.getElementById('filter-overlay'),drawer=document.getElementById('filter-drawer');
+document.getElementById('mobile-filter-btn').addEventListener('click',()=>{overlay.classList.add('show');drawer.classList.add('open');});
+document.getElementById('close-drawer').addEventListener('click',()=>{overlay.classList.remove('show');drawer.classList.remove('open');});
+overlay.addEventListener('click',()=>{overlay.classList.remove('show');drawer.classList.remove('open');});
+document.querySelectorAll('.mob-kota').forEach(btn=>btn.addEventListener('click',()=>{btn.classList.toggle('active');const v=btn.dataset.val;if(btn.classList.contains('active'))activeKota.push(v);else activeKota=activeKota.filter(x=>x!==v);}));
+const mp=document.getElementById('mob-price-range');
+mp.addEventListener('input',()=>{maxPrice=+mp.value;mp.style.setProperty('--val',(maxPrice/500*100)+'%');document.getElementById('mob-price-label').textContent=maxPrice>=500?'Rp500rb+':'Rp'+maxPrice+'rb';});mp.style.setProperty('--val','100%');
+document.getElementById('apply-mob-filter').addEventListener('click',()=>{activePage=1;render();overlay.classList.remove('show');drawer.classList.remove('open');});
+document.getElementById('clear-filters').addEventListener('click',resetAll);
+document.getElementById('menu-btn').addEventListener('click',()=>document.getElementById('mobile-menu').classList.toggle('open'));
+render();
+</script>
+</body>
+</html>
