@@ -234,6 +234,9 @@
           <a href="events.html" class="nav-link hover:text-gold font-medium"
             >Event</a
           >
+          <a href="kategori.html" class="nav-link hover:text-gold font-medium"
+            >Kategori</a
+          >
         </nav>
         <div class="flex items-center gap-3">
           <a
@@ -273,7 +276,7 @@
       <div
         class="max-w-7xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"
       >
-        <a href="da.html" class="hover:text-navy-mid transition-colors"
+        <a href="dashboard.html" class="hover:text-navy-mid transition-colors"
           >Beranda</a
         >
         <span>›</span>
@@ -1143,22 +1146,88 @@
           desc: "Titik Temu Fest adalah festival musik tahunan yang menghadirkan musisi-musisi indie terbaik Indonesia.",
           badge: "🔥 Populer",
         },
+        2: {
+          title: "Origin Fest",
+          kota: "Jakarta",
+          date: "20 Mei 2026",
+          img: "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=1400&q=80",
+          cat: "Musik",
+          desc: "Origin Fest menghadirkan deretan musisi berbakat dari seluruh Indonesia dalam satu panggung megah di Jakarta.",
+          badge: null,
+        },
+        3: {
+          title: "Jogjarockarta",
+          kota: "Yogyakarta",
+          date: "28 Mei 2026",
+          img: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1400&q=80",
+          cat: "Musik",
+          desc: "Jogjarockarta adalah festival rock tahunan kebanggaan Kota Yogyakarta yang mempertemukan band-band rock legendaris dan baru.",
+          badge: null,
+        },
+        4: {
+          title: "Surabaya Marathon 2026",
+          kota: "Surabaya",
+          date: "1 Juni 2026",
+          img: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=1400&q=80",
+          cat: "Olahraga",
+          desc: "Surabaya Marathon 2026 adalah ajang lari bergengsi yang melewati ikon-ikon kota Surabaya dengan kategori full marathon, half marathon, dan 10K.",
+          badge: null,
+        },
+        5: {
+          title: "Festival Budaya Nusantara",
+          kota: "Bandung",
+          date: "5 Juni 2026",
+          img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1400&q=80",
+          cat: "Budaya",
+          desc: "Festival Budaya Nusantara merayakan kekayaan seni dan tradisi Indonesia melalui pertunjukan tari, musik daerah, dan pameran kerajinan.",
+          badge: "🔥 Populer",
+        },
         6: {
           title: "Electronic Dance Festival",
           kota: "Bali",
           date: "14 Juni 2026",
           img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1400&q=80",
           cat: "Hiburan",
-          desc: "Festival EDM terbesar di Bali dengan DJ internasional terkemuka.",
+          desc: "Festival EDM terbesar di Bali dengan DJ internasional terkemuka memanjakan pecinta musik elektronik sepanjang malam.",
+          badge: "📈 Trending",
+        },
+        7: {
+          title: "Wedding Expo Indonesia",
+          kota: "Jakarta",
+          date: "21 Juni 2026",
+          img: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1400&q=80",
+          cat: "Pameran",
+          desc: "Wedding Expo Indonesia menghadirkan ratusan vendor pernikahan terbaik mulai dari dekorasi, katering, fotografer, hingga gaun pengantin.",
+          badge: "🔥 Populer",
+        },
+        8: {
+          title: "Stand Up Comedy Gala Night",
+          kota: "Surabaya",
+          date: "28 Juni 2026",
+          img: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=1400&q=80",
+          cat: "Hiburan",
+          desc: "Malam penuh tawa bersama komika-komika terbaik Indonesia dalam satu panggung spektakuler di Surabaya.",
           badge: "📈 Trending",
         },
       };
-      const id = +params.get("id") || 1;
+      // Baca id dari hash (#2) jika query string tidak tersedia (file://)
+      let id = +params.get("id");
+      if (!id) {
+        const hash = location.hash.replace("#", "");
+        id = +hash || 1;
+      }
       const ev = events[id] || events[1];
       document.getElementById("hero-img").src = ev.img;
       document.getElementById("hero-title").textContent = ev.title;
       document.getElementById("hero-cat").textContent = ev.cat;
-      document.getElementById("hero-badge").textContent = ev.badge;
+      // Badge: tampilkan hanya jika ada
+      const badgeEl = document.getElementById("hero-badge");
+      if (ev.badge) {
+        badgeEl.textContent = ev.badge;
+        badgeEl.style.display = "";
+      } else {
+        badgeEl.style.display = "none";
+      }
       document.getElementById("info-date").textContent = ev.date;
       document.getElementById("info-kota").textContent = ev.kota;
       document.getElementById("info-desc").textContent = ev.desc;

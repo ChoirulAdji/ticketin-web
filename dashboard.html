@@ -1,609 +1,1322 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TicketIn — Temukan Event Terbaik</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            navy: {
-              deep: '#001840',
-              mid: '#102A71',
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TicketIn — Temukan Event Terbaik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              navy: { deep: "#001840", mid: "#102A71" },
+              gold: { DEFAULT: "#F5C400", light: "#FFDC5F", badge: "#FFDF00" },
             },
-            gold: {
-              DEFAULT: '#F5C400',
-              light: '#FFDC5F',
-              badge: '#FFDF00',
-            }
+            fontFamily: { poppins: ["Poppins", "sans-serif"] },
           },
-          fontFamily: {
-            poppins: ['Poppins', 'sans-serif'],
-          }
+        },
+      };
+    </script>
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      .slider-track {
+        display: flex;
+        transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+      }
+      .slide {
+        min-width: 100%;
+        position: relative;
+      }
+      .dot.active {
+        background-color: #f5c400;
+        transform: scale(1.3);
+      }
+      .dot {
+        transition: all 0.3s;
+      }
+      .event-card {
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .event-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 24, 64, 0.15);
+      }
+      .nav-link {
+        position: relative;
+      }
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #f5c400;
+        transition: width 0.3s ease;
+      }
+      .nav-link:hover::after {
+        width: 100%;
+      }
+      #mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
+      }
+      #mobile-menu.open {
+        max-height: 300px;
+      }
+      @keyframes badgePulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(245, 196, 0, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 0 6px rgba(245, 196, 0, 0);
         }
       }
-    }
-  </script>
-  <style>
-    * { font-family: 'Poppins', sans-serif; }
-
-    /* Slider */
-    .slider-track {
-      display: flex;
-      transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-    }
-    .slide { min-width: 100%; position: relative; }
-
-    /* Dot active */
-    .dot.active { background-color: #F5C400; transform: scale(1.3); }
-    .dot { transition: all 0.3s; }
-
-    /* Card hover */
-    .event-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .event-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(0,24,64,0.15); }
-
-    /* Navbar link underline */
-    .nav-link { position: relative; }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -4px; left: 0;
-      width: 0; height: 2px;
-      background: #F5C400;
-      transition: width 0.3s ease;
-    }
-    .nav-link:hover::after { width: 100%; }
-
-    /* Mobile menu */
-    #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-    #mobile-menu.open { max-height: 300px; }
-
-    /* Badge pulse */
-    @keyframes badgePulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,196,0,0.5); }
-      50% { box-shadow: 0 0 0 6px rgba(245,196,0,0); }
-    }
-    .badge-popular { animation: badgePulse 2s infinite; }
-
-    /* Smooth scroll */
-    html { scroll-behavior: smooth; }
-
-    /* Footer link hover */
-    .footer-link { transition: color 0.2s, padding-left 0.2s; }
-    .footer-link:hover { color: #F5C400; padding-left: 4px; }
-
-    /* Payment badge */
-    .pay-badge {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      backdrop-filter: blur(4px);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: #fff;
-      transition: background 0.2s;
-    }
-    .pay-badge:hover { background: rgba(245,196,0,0.15); border-color: #F5C400; color: #F5C400; }
-
-    /* Section fade-in */
-    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .fade-in.visible { opacity: 1; transform: none; }
-  </style>
-</head>
-<body class="bg-gray-50 font-poppins">
-
-  <!-- ═══════════════ NAVBAR ═══════════════ -->
-  <header class="fixed top-0 left-0 w-full bg-navy-mid text-white shadow-lg z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-      <!-- Logo -->
-      <a href="#" class="flex items-center gap-2 group">
-        <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center group-hover:bg-gold-light transition-all duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-          </svg>
-        </div>
-        <span class="text-xl font-bold tracking-tight">TicketIn</span>
-      </a>
-
-      <!-- Desktop Nav -->
-      <nav class="hidden md:flex gap-8">
-        <a href="#beranda" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Beranda</a>
-        <a href="#tentang" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Event</a>
-        <a href="#kontak" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Tentang</a>
-        <a href="#kontak" class="nav-link hover:text-gold transition-colors duration-200 font-medium">Hubungi Kami</a>
-      </nav>
-
-      <!-- Actions -->
-      <div class="flex items-center gap-4">
-        <button class="p-2 hover:bg-white/10 rounded-lg transition-all duration-200" aria-label="Cari event">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-        <a href="login.html" class="bg-gold text-navy-deep px-5 py-2 rounded-lg font-semibold hover:bg-gold-light transition-all duration-300 hover:shadow-lg hover:shadow-gold/30 inline-block">
-          Masuk
-          </a>
-        </button>
-        <!-- Hamburger -->
-        <button id="menu-btn" class="md:hidden p-1" aria-label="Menu">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="bg-navy-mid border-t border-white/10">
-      <nav class="flex flex-col px-6 py-4 gap-3">
-        <a href="#beranda" class="hover:text-gold transition font-medium">Beranda</a>
-        <a href="#tentang" class="hover:text-gold transition font-medium">Tentang</a>
-        <a href="#kontak" class="hover:text-gold transition font-medium">Hubungi Kami</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- ═══════════════ HERO SLIDER ═══════════════ -->
-  <section id="beranda" class="pt-[72px] relative overflow-hidden">
-    <div class="relative overflow-hidden">
-      <div id="slider" class="slider-track">
-
-        <!-- Slide 1 -->
-        <div class="slide h-[420px] md:h-[500px]" style="background: linear-gradient(135deg, #0a1628 0%, #1a3a6e 100%);">
-          <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1400&q=80" alt="Concert" class="w-full h-full object-cover opacity-50" />
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-r from-navy-deep/90 via-navy-deep/60 to-transparent"></div>
-          <div class="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-3xl">
-            <span class="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Event Musik</span>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-3 leading-tight">Temukan Event Terbaik<br>di Sekitarmu</h2>
-            <p class="text-white/80 mb-6 text-lg">Konser, seminar, workshop, dan banyak lagi pengalaman tak terlupakan</p>
-            <button class="bg-gold text-navy-deep px-7 py-3 rounded-xl font-bold w-fit hover:bg-gold-light hover:shadow-xl hover:shadow-gold/30 transition-all duration-300 text-sm tracking-wide">
-              🎟️ Jelajahi Event
-            </button>
-          </div>
-        </div>
-
-        <!-- Slide 2 -->
-        <div class="slide h-[420px] md:h-[500px] relative">
-          <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1400&q=80" alt="Seminar" class="w-full h-full object-cover opacity-50" />
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-r from-navy-deep/90 via-navy-deep/60 to-transparent"></div>
-          <div class="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-3xl">
-            <span class="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Tech & Bisnis</span>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-3 leading-tight">Tingkatkan Skill &<br>Networking Kamu</h2>
-            <p class="text-white/80 mb-6 text-lg">Seminar & workshop eksklusif dari para pakar industri terkemuka</p>
-            <button class="bg-gold text-navy-deep px-7 py-3 rounded-xl font-bold w-fit hover:bg-gold-light hover:shadow-xl hover:shadow-gold/30 transition-all duration-300 text-sm tracking-wide">
-              🎟️ Lihat Seminar
-            </button>
-          </div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="slide h-[420px] md:h-[500px] relative">
-          <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1400&q=80" alt="Festival" class="w-full h-full object-cover opacity-50" />
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-r from-navy-deep/90 via-navy-deep/60 to-transparent"></div>
-          <div class="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-3xl">
-            <span class="text-gold text-sm font-semibold tracking-widest uppercase mb-3">Budaya & Seni</span>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-3 leading-tight">Rayakan Kekayaan<br>Budaya Nusantara</h2>
-            <p class="text-white/80 mb-6 text-lg">Festival seni, pertunjukan tradisional, dan pameran budaya terbaik</p>
-            <button class="bg-gold text-navy-deep px-7 py-3 rounded-xl font-bold w-fit hover:bg-gold-light hover:shadow-xl hover:shadow-gold/30 transition-all duration-300 text-sm tracking-wide">
-              🎟️ Lihat Festival
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Arrows -->
-      <button id="prev-btn" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-gold text-white hover:text-navy-deep backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button id="next-btn" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-gold text-white hover:text-navy-deep backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-
-      <!-- Dots -->
-      <div id="dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        <button class="dot w-3 h-3 rounded-full bg-white/50 active" data-index="0"></button>
-        <button class="dot w-3 h-3 rounded-full bg-white/50" data-index="1"></button>
-        <button class="dot w-3 h-3 rounded-full bg-white/50" data-index="2"></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════ EVENT TERDEKAT ═══════════════ -->
-  <section class="max-w-7xl mx-auto px-6 py-14 fade-in">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h2 class="text-2xl md:text-3xl font-extrabold text-navy-deep">Event Terdekat</h2>
-        <p class="text-gray-500 text-sm mt-1">Jangan sampai ketinggalan event di kotamu</p>
-      </div>
-      <a href="#" class="text-navy-mid font-semibold hover:text-gold transition-colors text-sm flex items-center gap-1">
-        Lihat semua
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </a>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-      <!-- Card 1 -->
-      <a href="detail-event.html?id=titiktemufest" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block">
-        <div class="overflow-hidden h-44">
-          <img src="gambar/titiktemufest.jpg" alt="Music Festival" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Musik</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Titik Temu Fest</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            4 April 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Surabaya
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Mulai dari Rp50.000</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200">Beli</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Card 2 -->
-      <a href="detail-event.html?id=techsummit" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block">
-        <div class="overflow-hidden h-44">
-          <img src="gambar/origin.jpg" alt="Music Festival" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Musik</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Origin Fest</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            20 Mei 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Jakarta
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Mulai dari Rp75.000</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200">Beli</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Card 3 -->
-      <a href="detail-event.html?id=designworkshop" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block">
-        <div class="overflow-hidden h-44">
-          <img src="gambar/jogja.jpg" alt="Musik Festival" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Musik</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Jogjarockarta</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            28 Mei 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Yogyakarta
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Mulai dari Rp120.000</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200">Beli</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Card 4 -->
-      <a href="detail-event.html?id=surabayamarathon" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block">
-        <div class="overflow-hidden h-44">
-          <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=80" alt="Sport" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Olahraga</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Surabaya Marathon 2026</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            1 Juni 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Surabaya
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Mulai dari Rp200.000</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200">Beli</span>
-          </div>
-        </div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ═══════════════ REKOMENDASI EVENT ═══════════════ -->
-  <section class="max-w-7xl mx-auto px-6 py-14 fade-in">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h2 class="text-2xl md:text-3xl font-extrabold text-navy-deep">Rekomendasi Event</h2>
-        <p class="text-gray-500 text-sm mt-1">Untukmu </p>
-      </div>
-      <a href="#" class="text-navy-mid font-semibold hover:text-gold transition-colors text-sm flex items-center gap-1">
-        Lihat semua
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </a>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-      <!-- Rec Card 1 — Populer -->
-      <a href="detail-event.html?id=budayanusantara" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block">
-        <span class="badge-popular absolute top-3 right-3 z-10 bg-gold-badge text-navy-deep text-xs font-bold px-3 py-1 rounded-full">🔥 Populer</span>
-        <div class="overflow-hidden h-44">
-          <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80" alt="Festival Budaya" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Budaya</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Festival Budaya Nusantara</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            5 Juni 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Bandung
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Mulai dari Rp30.000</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200">Beli</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Rec Card 2 — Trending -->
-      <a href="detail-event.html?id=edmfestival" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block">
-        <span class="absolute top-3 right-3 z-10 bg-gold-badge text-navy-deep text-xs font-bold px-3 py-1 rounded-full">📈 Trending</span>
-        <div class="overflow-hidden h-44">
-          <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80" alt="DJ Night" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Hiburan</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Electronic Dance Festival</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            14 Juni 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Bali
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Mulai dari Rp180.000</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200">Beli</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Rec Card 3 — Populer -->
-      <a href="detail-event.html?id=weddingexpo" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block">
-        <span class="badge-popular absolute top-3 right-3 z-10 bg-gold-badge text-navy-deep text-xs font-bold px-3 py-1 rounded-full">🔥 Populer</span>
-        <div class="overflow-hidden h-44">
-          <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&q=80" alt="Wedding Expo" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Pameran</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Wedding Expo Indonesia</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            21 Juni 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Jakarta
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Gratis</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200 inline-block">Daftar</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Rec Card 4 — Trending -->
-      <a href="detail-event.html?id=comedygala" class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block">
-        <span class="absolute top-3 right-3 z-10 bg-gold-badge text-navy-deep text-xs font-bold px-3 py-1 rounded-full">📈 Trending</span>
-        <div class="overflow-hidden h-44">
-          <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&q=80" alt="Comedy Show" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium">Hiburan</span>
-          </div>
-          <h3 class="font-bold text-navy-deep text-base leading-snug">Stand Up Comedy Gala Night</h3>
-          <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            28 Juni 2026
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Surabaya
-          </p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-navy-mid font-bold text-sm">Mulai dari Rp95.000</p>
-            <span class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200 inline-block">Beli</span>
-          </div>
-        </div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ═══════════════ FOOTER ═══════════════ -->
-  <footer id="kontak" class="bg-navy-deep text-white mt-10">
-    <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
-
-      <!-- Col 1: Brand + CS -->
-      <div>
-        <div class="flex items-center gap-2 mb-4">
-          <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+      .badge-popular {
+        animation: badgePulse 2s infinite;
+      }
+      .footer-link {
+        transition:
+          color 0.2s,
+          padding-left 0.2s;
+      }
+      .footer-link:hover {
+        color: #f5c400;
+        padding-left: 4px;
+      }
+      .pay-badge {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(4px);
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: #fff;
+        transition: background 0.2s;
+      }
+      .pay-badge:hover {
+        background: rgba(245, 196, 0, 0.15);
+        border-color: #f5c400;
+        color: #f5c400;
+      }
+      .fade-in {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-poppins">
+    <!-- NAVBAR -->
+    <header
+      class="fixed top-0 left-0 w-full bg-navy-mid text-white shadow-lg z-50"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <a href="dashboard.html" class="flex items-center gap-2 group">
+          <div
+            class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center group-hover:bg-gold-light transition-all duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 text-navy-deep"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+              />
             </svg>
           </div>
-          <span class="text-xl font-bold">TicketIn</span>
+          <span class="text-xl font-bold tracking-tight">TicketIn</span>
+        </a>
+        <nav class="hidden md:flex gap-8">
+          <a href="dashboard.html" class="nav-link text-gold font-semibold"
+            >Beranda</a
+          >
+          <a
+            href="events.html"
+            class="nav-link hover:text-gold transition-colors duration-200 font-medium"
+            >Event</a
+          >
+          <a
+            href="kategori.html"
+            class="nav-link hover:text-gold transition-colors duration-200 font-medium"
+            >Kategori</a
+          >
+          <a
+            href="#kontak"
+            class="nav-link hover:text-gold transition-colors duration-200 font-medium"
+            >Hubungi Kami</a
+          >
+        </nav>
+        <div class="flex items-center gap-4">
+          <a
+            href="events.html"
+            class="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
+            aria-label="Cari event"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </a>
+          <a
+            href="login.html"
+            class="bg-gold text-navy-deep px-5 py-2 rounded-lg font-semibold hover:bg-gold-light transition-all duration-300 hover:shadow-lg hover:shadow-gold/30"
+            >Masuk</a
+          >
+          <button id="menu-btn" class="md:hidden p-1" aria-label="Menu">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
         </div>
-        <p class="text-white/60 text-sm mb-5 leading-relaxed">Platform tiket event terpercaya untuk menemukan dan menikmati berbagai event terbaik di Indonesia.</p>
-        <h4 class="font-semibold text-gold mb-3 text-sm uppercase tracking-wider">Customer Service</h4>
-        <ul class="space-y-2 text-sm text-white/70">
-          <li><a href="mailto:cs@ticketin.com" class="footer-link hover:text-gold">cs@ticketin.com</a></li>
-          <li><a href="mailto:marketing@ticketin.com" class="footer-link hover:text-gold">marketing@ticketin.com</a></li>
-          <li><a href="mailto:partnership@ticketin.com" class="footer-link hover:text-gold">partnership@ticketin.com</a></li>
-        </ul>
       </div>
-
-      <!-- Col 2: Sosial Media -->
-      <div id="tentang">
-        <h4 class="font-semibold text-gold mb-4 text-sm uppercase tracking-wider">Sosial Media</h4>
-        <ul class="space-y-3 text-sm">
-          <li>
-            <a href="#" class="flex items-center gap-3 text-white/70 footer-link group">
-              <span class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-gold/20 transition-all">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-              </span>
-              Instagram @ticketin.id
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center gap-3 text-white/70 footer-link group">
-              <span class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-gold/20 transition-all">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-              </span>
-              WhatsApp +62 812 3456 7890
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center gap-3 text-white/70 footer-link group">
-              <span class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-gold/20 transition-all">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-              </span>
-              Facebook TicketIn Indonesia
-            </a>
-          </li>
-        </ul>
+      <div id="mobile-menu" class="bg-navy-mid border-t border-white/10">
+        <nav class="flex flex-col px-6 py-4 gap-3 text-sm">
+          <a href="dashboard.html" class="text-gold font-semibold">Beranda</a>
+          <a href="events.html" class="hover:text-gold transition font-medium"
+            >Event</a
+          >
+          <a href="kategori.html" class="hover:text-gold transition font-medium"
+            >Kategori</a
+          >
+          <a href="#kontak" class="hover:text-gold transition font-medium"
+            >Hubungi Kami</a
+          >
+        </nav>
       </div>
+    </header>
 
-      <!-- Col 3: Pembayaran -->
-      <div>
-        <h4 class="font-semibold text-gold mb-4 text-sm uppercase tracking-wider">Metode Pembayaran</h4>
-        <div class="flex flex-wrap gap-2">
-          <span class="pay-badge">BCA</span>
-          <span class="pay-badge">Mandiri</span>
-          <span class="pay-badge">BNI</span>
-          <span class="pay-badge">OVO</span>
-          <span class="pay-badge">GoPay</span>
-          <span class="pay-badge">Dana</span>
-          <span class="pay-badge">QRIS</span>
-          <span class="pay-badge">Visa</span>
+    <!-- HERO SLIDER -->
+    <section id="beranda" class="pt-[72px] relative overflow-hidden">
+      <div class="relative overflow-hidden">
+        <div id="slider" class="slider-track">
+          <!-- Slide 1 -->
+          <div
+            class="slide h-[420px] md:h-[500px]"
+            style="
+              background: linear-gradient(135deg, #0a1628 0%, #1a3a6e 100%);
+            "
+          >
+            <div class="absolute inset-0 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1400&q=80"
+                alt="Concert"
+                class="w-full h-full object-cover opacity-50"
+              />
+            </div>
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-navy-deep/90 via-navy-deep/60 to-transparent"
+            ></div>
+            <div
+              class="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-3xl"
+            >
+              <span
+                class="text-gold text-sm font-semibold tracking-widest uppercase mb-3"
+                >Event Musik</span
+              >
+              <h2
+                class="text-3xl md:text-5xl font-extrabold text-white mb-3 leading-tight"
+              >
+                Temukan Event Terbaik<br />di Sekitarmu
+              </h2>
+              <p class="text-white/80 mb-6 text-lg">
+                Konser, seminar, workshop, dan banyak lagi pengalaman tak
+                terlupakan
+              </p>
+              <a
+                href="events.html"
+                class="bg-gold text-navy-deep px-7 py-3 rounded-xl font-bold w-fit hover:bg-gold-light hover:shadow-xl hover:shadow-gold/30 transition-all duration-300 text-sm tracking-wide inline-block"
+                >🎟️ Jelajahi Event</a
+              >
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="slide h-[420px] md:h-[500px] relative">
+            <div class="absolute inset-0 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1400&q=80"
+                alt="Seminar"
+                class="w-full h-full object-cover opacity-50"
+              />
+            </div>
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-navy-deep/90 via-navy-deep/60 to-transparent"
+            ></div>
+            <div
+              class="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-3xl"
+            >
+              <span
+                class="text-gold text-sm font-semibold tracking-widest uppercase mb-3"
+                >Tech & Bisnis</span
+              >
+              <h2
+                class="text-3xl md:text-5xl font-extrabold text-white mb-3 leading-tight"
+              >
+                Tingkatkan Skill &<br />Networking Kamu
+              </h2>
+              <p class="text-white/80 mb-6 text-lg">
+                Seminar & workshop eksklusif dari para pakar industri terkemuka
+              </p>
+              <a
+                href="events.html?cat=seminar"
+                class="bg-gold text-navy-deep px-7 py-3 rounded-xl font-bold w-fit hover:bg-gold-light hover:shadow-xl hover:shadow-gold/30 transition-all duration-300 text-sm tracking-wide inline-block"
+                >🎟️ Lihat Seminar</a
+              >
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="slide h-[420px] md:h-[500px] relative">
+            <div class="absolute inset-0 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1400&q=80"
+                alt="Festival"
+                class="w-full h-full object-cover opacity-50"
+              />
+            </div>
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-navy-deep/90 via-navy-deep/60 to-transparent"
+            ></div>
+            <div
+              class="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-3xl"
+            >
+              <span
+                class="text-gold text-sm font-semibold tracking-widest uppercase mb-3"
+                >Budaya & Seni</span
+              >
+              <h2
+                class="text-3xl md:text-5xl font-extrabold text-white mb-3 leading-tight"
+              >
+                Rayakan Kekayaan<br />Budaya Nusantara
+              </h2>
+              <p class="text-white/80 mb-6 text-lg">
+                Festival seni, pertunjukan tradisional, dan pameran budaya
+                terbaik
+              </p>
+              <a
+                href="kategori.html"
+                class="bg-gold text-navy-deep px-7 py-3 rounded-xl font-bold w-fit hover:bg-gold-light hover:shadow-xl hover:shadow-gold/30 transition-all duration-300 text-sm tracking-wide inline-block"
+                >🎟️ Lihat Festival</a
+              >
+            </div>
+          </div>
         </div>
-        <div class="mt-6">
-          <h4 class="font-semibold text-gold mb-3 text-sm uppercase tracking-wider">Download App</h4>
-          <div class="flex flex-col gap-2">
-            <a href="#" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-2 rounded-lg transition-all text-sm">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-              App Store
-            </a>
-            <a href="#" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-2 rounded-lg transition-all text-sm">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3.18 23.76A1 1 0 0 0 4 24a1 1 0 0 0 .49-.13l11.44-6.39-2.49-2.49zM.34 1.26A1 1 0 0 0 0 2v20a1 1 0 0 0 .34.74l.11.09 11.2-11.2v-.26L.45 1.17zM17.8 10.4l-3.05-1.7L12.2 11l2.55 2.55 3.06-1.71a1 1 0 0 0 0-1.44zM4.49.13l11.44 6.39-2.49 2.49L4.49.13z"/></svg>
-              Play Store
-            </a>
+
+        <button
+          id="prev-btn"
+          class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-gold text-white hover:text-navy-deep backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <button
+          id="next-btn"
+          class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-gold text-white hover:text-navy-deep backdrop-blur-sm w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+        <div
+          id="dots"
+          class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10"
+        >
+          <button
+            class="dot w-3 h-3 rounded-full bg-white/50 active"
+            data-index="0"
+          ></button>
+          <button
+            class="dot w-3 h-3 rounded-full bg-white/50"
+            data-index="1"
+          ></button>
+          <button
+            class="dot w-3 h-3 rounded-full bg-white/50"
+            data-index="2"
+          ></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENT TERDEKAT -->
+    <section class="max-w-7xl mx-auto px-6 py-14 fade-in">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-navy-deep">
+            Event Terdekat
+          </h2>
+          <p class="text-gray-500 text-sm mt-1">
+            Jangan sampai ketinggalan event di kotamu
+          </p>
+        </div>
+        <a
+          href="events.html"
+          class="text-navy-mid font-semibold hover:text-gold transition-colors text-sm flex items-center gap-1"
+        >
+          Lihat semua
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Card 1: Titik Temu Fest -->
+        <a
+          href="event-detail.html?id=1"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block"
+        >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=80"
+              alt="Titik Temu Fest"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Musik</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Titik Temu Fest
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              4 April 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Surabaya
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">Mulai dari Rp50.000</p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Beli</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 2: Origin Fest -->
+        <a
+          href="event-detail.html?id=2"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block"
+        >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=400&q=80"
+              alt="Origin Fest"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Musik</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Origin Fest
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              20 Mei 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Jakarta
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">Mulai dari Rp75.000</p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Beli</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 3: Jogjarockarta -->
+        <a
+          href="event-detail.html?id=3"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block"
+        >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80"
+              alt="Jogjarockarta"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Musik</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Jogjarockarta
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              28 Mei 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Yogyakarta
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">
+                Mulai dari Rp120.000
+              </p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Beli</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 4: Surabaya Marathon -->
+        <a
+          href="event-detail.html?id=4"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group block"
+        >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=80"
+              alt="Surabaya Marathon"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Olahraga</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Surabaya Marathon 2026
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              1 Juni 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Surabaya
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">
+                Mulai dari Rp200.000
+              </p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Beli</span
+              >
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- REKOMENDASI EVENT -->
+    <section class="max-w-7xl mx-auto px-6 py-14 fade-in">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-navy-deep">
+            Rekomendasi Event
+          </h2>
+          <p class="text-gray-500 text-sm mt-1">Pilihan terbaik untukmu</p>
+        </div>
+        <a
+          href="events.html"
+          class="text-navy-mid font-semibold hover:text-gold transition-colors text-sm flex items-center gap-1"
+        >
+          Lihat semua
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Rec 1: Festival Budaya Nusantara -->
+        <a
+          href="event-detail.html?id=5"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block"
+        >
+          <span
+            class="badge-popular absolute top-3 right-3 z-10 bg-gold text-navy-deep text-xs font-bold px-3 py-1 rounded-full"
+            >🔥 Populer</span
+          >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80"
+              alt="Festival Budaya Nusantara"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Budaya</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Festival Budaya Nusantara
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              5 Juni 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Bandung
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">Mulai dari Rp30.000</p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Beli</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Rec 2: Electronic Dance Festival -->
+        <a
+          href="event-detail.html?id=6"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block"
+        >
+          <span
+            class="absolute top-3 right-3 z-10 bg-gold text-navy-deep text-xs font-bold px-3 py-1 rounded-full"
+            >📈 Trending</span
+          >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80"
+              alt="Electronic Dance Festival"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Hiburan</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Electronic Dance Festival
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              14 Juni 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Bali
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">
+                Mulai dari Rp180.000
+              </p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Beli</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Rec 3: Wedding Expo -->
+        <a
+          href="event-detail.html?id=7"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block"
+        >
+          <span
+            class="badge-popular absolute top-3 right-3 z-10 bg-gold text-navy-deep text-xs font-bold px-3 py-1 rounded-full"
+            >🔥 Populer</span
+          >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&q=80"
+              alt="Wedding Expo Indonesia"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Pameran</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Wedding Expo Indonesia
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              21 Juni 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Jakarta
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">Gratis</p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Daftar</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Rec 4: Stand Up Comedy -->
+        <a
+          href="event-detail.html?id=8"
+          class="event-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer group relative block"
+        >
+          <span
+            class="absolute top-3 right-3 z-10 bg-gold text-navy-deep text-xs font-bold px-3 py-1 rounded-full"
+            >📈 Trending</span
+          >
+          <div class="overflow-hidden h-44">
+            <img
+              src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&q=80"
+              alt="Stand Up Comedy"
+              class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-4">
+            <span
+              class="bg-navy-mid/10 text-navy-mid text-xs px-2 py-0.5 rounded-full font-medium"
+              >Hiburan</span
+            >
+            <h3 class="font-bold text-navy-deep text-base leading-snug mt-2">
+              Stand Up Comedy Gala Night
+            </h3>
+            <p class="text-sm text-gray-400 mt-1 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              28 Juni 2026
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Surabaya
+            </p>
+            <div class="flex items-center justify-between mt-3">
+              <p class="text-navy-mid font-bold text-sm">Mulai dari Rp95.000</p>
+              <span
+                class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all duration-200"
+                >Beli</span
+              >
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="kontak" class="bg-navy-deep text-white mt-10">
+      <div
+        class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10"
+      >
+        <!-- Col 1: Brand + CS -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div
+              class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5 text-navy-deep"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                />
+              </svg>
+            </div>
+            <span class="text-xl font-bold">TicketIn</span>
+          </div>
+          <p class="text-white/60 text-sm mb-5 leading-relaxed">
+            Platform tiket event terpercaya untuk menemukan dan menikmati
+            berbagai event terbaik di Indonesia.
+          </p>
+          <h4
+            class="font-semibold text-gold mb-3 text-sm uppercase tracking-wider"
+          >
+            Customer Service
+          </h4>
+          <ul class="space-y-2 text-sm text-white/70">
+            <li>
+              <a
+                href="mailto:cs@ticketin.com"
+                class="footer-link hover:text-gold"
+                >cs@ticketin.com</a
+              >
+            </li>
+            <li>
+              <a
+                href="mailto:marketing@ticketin.com"
+                class="footer-link hover:text-gold"
+                >marketing@ticketin.com</a
+              >
+            </li>
+            <li>
+              <a
+                href="mailto:partnership@ticketin.com"
+                class="footer-link hover:text-gold"
+                >partnership@ticketin.com</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Col 2: Sosial Media -->
+        <div id="tentang">
+          <h4
+            class="font-semibold text-gold mb-4 text-sm uppercase tracking-wider"
+          >
+            Sosial Media
+          </h4>
+          <ul class="space-y-3 text-sm">
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 text-white/70 footer-link group"
+              >
+                <span
+                  class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-gold/20 transition-all"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                    />
+                  </svg>
+                </span>
+                Instagram @ticketin.id
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 text-white/70 footer-link group"
+              >
+                <span
+                  class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-gold/20 transition-all"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+                    />
+                  </svg>
+                </span>
+                WhatsApp +62 812 3456 7890
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 text-white/70 footer-link group"
+              >
+                <span
+                  class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-gold/20 transition-all"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                    />
+                  </svg>
+                </span>
+                Facebook TicketIn Indonesia
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Pembayaran -->
+        <div>
+          <h4
+            class="font-semibold text-gold mb-4 text-sm uppercase tracking-wider"
+          >
+            Metode Pembayaran
+          </h4>
+          <div class="flex flex-wrap gap-2">
+            <span class="pay-badge">BCA</span
+            ><span class="pay-badge">Mandiri</span
+            ><span class="pay-badge">BNI</span>
+            <span class="pay-badge">OVO</span
+            ><span class="pay-badge">GoPay</span
+            ><span class="pay-badge">Dana</span>
+            <span class="pay-badge">QRIS</span
+            ><span class="pay-badge">Visa</span>
+          </div>
+          <div class="mt-6">
+            <h4
+              class="font-semibold text-gold mb-3 text-sm uppercase tracking-wider"
+            >
+              Download App
+            </h4>
+            <div class="flex flex-col gap-2">
+              <a
+                href="#"
+                class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-2 rounded-lg transition-all text-sm"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
+                  />
+                </svg>
+                App Store
+              </a>
+              <a
+                href="#"
+                class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-2 rounded-lg transition-all text-sm"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M3.18 23.76A1 1 0 0 0 4 24a1 1 0 0 0 .49-.13l11.44-6.39-2.49-2.49zM.34 1.26A1 1 0 0 0 0 2v20a1 1 0 0 0 .34.74l.11.09 11.2-11.2v-.26L.45 1.17zM17.8 10.4l-3.05-1.7L12.2 11l2.55 2.55 3.06-1.71a1 1 0 0 0 0-1.44zM4.49.13l11.44 6.39-2.49 2.49L4.49.13z"
+                  />
+                </svg>
+                Play Store
+              </a>
+            </div>
           </div>
         </div>
       </div>
-
-    </div>
-
-    <!-- Divider + Copyright -->
-    <div class="border-t border-navy-mid">
-      <div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-white/50">
-        <p>© 2026 TicketIn. All rights reserved.</p>
-        <div class="flex gap-4">
-          <a href="#" class="hover:text-gold transition-colors">Syarat & Ketentuan</a>
-          <a href="#" class="hover:text-gold transition-colors">Kebijakan Privasi</a>
+      <div class="border-t border-navy-mid">
+        <div
+          class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-white/50"
+        >
+          <p>© 2026 TicketIn. All rights reserved.</p>
+          <div class="flex gap-4">
+            <a href="#" class="hover:text-gold transition-colors"
+              >Syarat & Ketentuan</a
+            >
+            <a href="#" class="hover:text-gold transition-colors"
+              >Kebijakan Privasi</a
+            >
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
 
-  <!-- ═══════════════ SCRIPTS ═══════════════ -->
-  <script>
-    // ── Slider ──
-    const slider = document.getElementById('slider');
-    const dots = document.querySelectorAll('.dot');
-    let current = 0;
-    const total = 3;
-    let autoTimer;
+    <script>
+      // Slider
+      const slider = document.getElementById("slider");
+      const dots = document.querySelectorAll(".dot");
+      let current = 0,
+        autoTimer;
+      const total = 3;
+      function goTo(index) {
+        current = (index + total) % total;
+        slider.style.transform = `translateX(-${current * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle("active", i === current));
+      }
+      document.getElementById("prev-btn").addEventListener("click", () => {
+        goTo(current - 1);
+        resetAuto();
+      });
+      document.getElementById("next-btn").addEventListener("click", () => {
+        goTo(current + 1);
+        resetAuto();
+      });
+      dots.forEach((d) =>
+        d.addEventListener("click", () => {
+          goTo(+d.dataset.index);
+          resetAuto();
+        }),
+      );
+      function startAuto() {
+        autoTimer = setInterval(() => goTo(current + 1), 4500);
+      }
+      function resetAuto() {
+        clearInterval(autoTimer);
+        startAuto();
+      }
+      startAuto();
 
-    function goTo(index) {
-      current = (index + total) % total;
-      slider.style.transform = `translateX(-${current * 100}%)`;
-      dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    }
+      // Mobile Menu
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      menuBtn.addEventListener("click", () =>
+        mobileMenu.classList.toggle("open"),
+      );
+      mobileMenu
+        .querySelectorAll("a")
+        .forEach((a) =>
+          a.addEventListener("click", () =>
+            mobileMenu.classList.remove("open"),
+          ),
+        );
 
-    document.getElementById('prev-btn').addEventListener('click', () => { goTo(current - 1); resetAuto(); });
-    document.getElementById('next-btn').addEventListener('click', () => { goTo(current + 1); resetAuto(); });
-    dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.index); resetAuto(); }));
-
-    function startAuto() { autoTimer = setInterval(() => goTo(current + 1), 4500); }
-    function resetAuto() { clearInterval(autoTimer); startAuto(); }
-    startAuto();
-
-    // ── Mobile Menu ──
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-
-    // Close mobile menu on link click
-    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
-
-    // ── Scroll fade-in ──
-    const fadeEls = document.querySelectorAll('.fade-in');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.1 });
-    fadeEls.forEach(el => observer.observe(el));
-  </script>
-
-</body>
+      // Scroll fade-in
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+              observer.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+      document
+        .querySelectorAll(".fade-in")
+        .forEach((el) => observer.observe(el));
+    </script>
+  </body>
 </html>

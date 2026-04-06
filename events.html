@@ -1014,7 +1014,7 @@
         grid.innerHTML = paged
           .map(
             (e) => `
-    <article class="event-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer group relative" onclick="location.href='event-detail.html?id=${e.id}'">
+    <article class="event-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer group relative" onclick="location.href='event-detail.html?id='+e.id+'#'+e.id">
       ${e.badge ? `<span class="absolute top-3 right-3 z-10 bg-gold text-navy-deep text-xs font-bold px-3 py-1 rounded-full ${e.hot ? "badge-hot" : ""}">${e.badge}</span>` : ""}
       <div class="overflow-hidden h-44"><img src="${e.img}" alt="${e.title}" class="w-full h-44 object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy"/></div>
       <div class="p-4">
@@ -1024,7 +1024,7 @@
         <p class="text-xs text-gray-500 mt-0.5 flex items-center gap-1 capitalize"><svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>${e.kota}</p>
         <div class="flex items-center justify-between mt-3">
           <p class="text-navy-mid font-bold text-sm">${e.priceLabel}</p>
-          <button onclick="event.stopPropagation();location.href='event-detail.html?id=${e.id}'" class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all">${e.price === 0 ? "Daftar" : "Beli"}</button>
+          <button onclick="event.stopPropagation();location.href='event-detail.html?id='+e.id+'#'+e.id" class="bg-gold text-navy-deep text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gold-light transition-all">${e.price === 0 ? "Daftar" : "Beli"}</button>
         </div>
       </div>
     </article>`,
