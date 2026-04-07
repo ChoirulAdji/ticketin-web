@@ -1,3 +1,58 @@
+<?php
+// Memulai session untuk menyimpan data login user
+session_start();
+
+// Matikan error warning sementara jika koneksi gagal agar desain tidak rusak
+error_reporting(0); 
+
+$error = "";
+$success = false;
+
+// Cek apakah koneksi.php ada dan berhasil di-load
+if (file_exists('koneksi.php')) {
+    require 'koneksi.php';
+}
+
+// Jika tombol "Masuk ke TicketIn" ditekan
+if (isset($_POST['login'])) {
+    // Pastikan variabel $conn tersedia dari koneksi.php
+    if (!isset($conn) || !$conn) {
+        $error = "Gagal terhubung ke database. Pastikan XAMPP dan MySQL sudah menyala.";
+    } else {
+        // Menangkap data dari form HTML
+        $email    = mysqli_real_escape_string($conn, $_POST['email']);
+        $password = $_POST['password'];
+
+        // Cari user berdasarkan email
+        $query = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email'");
+        
+        if (mysqli_num_rows($query) === 1) {
+            $row = mysqli_fetch_assoc($query);
+            
+            // Cek kecocokan password dengan hash di database
+            if (password_verify($password, $row['password_hash'])) {
+                // Set Session (Login berhasil)
+                $_SESSION['user_id'] = $row['id'];
+                $_SESSION['nama']    = $row['nama_lengkap'];
+                $_SESSION['role']    = $row['role'];
+                
+                $success = true;
+            } else {
+                $error = "Password yang Anda masukkan salah!";
+            }
+        } else {
+            $error = "Email tidak ditemukan! Silakan daftar terlebih dahulu.";
+        }
+    }
+}
+
+// Persiapkan elemen HTML pesan error dari PHP
+$error_html = "";
+if (!empty($error)) {
+    $error_html = "<div class='bg-red-500/20 border border-red-500 text-red-200 p-3 rounded-lg mb-6 text-sm text-center'>" . $error . "</div>";
+}
+$overlay_class = $success ? 'show' : '';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -102,6 +157,7 @@
       color: rgba(255,255,255,0.35);
       cursor: pointer;
       transition: color 0.3s;
+      background: none; border: none;
     }
     .toggle-pass:hover { color: #F5C400; }
 
@@ -252,8 +308,9 @@
   <div class="bg-blob bg-blob-3"></div>
 
   <!-- ══ NAVBAR ══ -->
-  <header class="fixed top-0 left-0 w-full bg-navy-mid text-white shadow-lg z-50">    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="index.html" class="flex items-center gap-2 group">
+  <header class="fixed top-0 left-0 w-full bg-navy-mid text-white shadow-lg z-50">    
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="dashboard.php" class="flex items-center gap-2 group">
         <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center group-hover:bg-gold-light transition-all duration-300">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
@@ -262,10 +319,10 @@
         <span class="text-xl font-bold text-white tracking-tight">TicketIn</span>
       </a>
       <nav class="hidden md:flex gap-8">
-        <a href="index.html" class="nav-link text-white/70 hover:text-gold transition-colors font-medium text-sm">Beranda</a>
+        <a href="dashboard.php" class="nav-link text-white/70 hover:text-gold transition-colors font-medium text-sm">Beranda</a>
         <a href="hubungi.html" class="nav-link text-white/70 hover:text-gold transition-colors font-medium text-sm">Hubungi Kami</a>
       </nav>
-      <a href="register.html" class="text-white/70 hover:text-gold transition-colors font-medium text-sm hidden md:block">
+      <a href="register.php" class="text-white/70 hover:text-gold transition-colors font-medium text-sm hidden md:block">
         Belum punya akun? <span class="text-gold font-semibold">Daftar</span>
       </a>
     </div>
@@ -285,6 +342,9 @@
     <div class="w-full max-w-md card-enter">
       <div class="glass-card rounded-2xl p-8 md:p-10">
 
+        <!-- Pesan Error / Pesan Sistem (Aman untuk dibuka tanpa XAMPP) -->
+        <?php echo $error_html; ?>
+
         <!-- Header -->
         <div class="text-center mb-8 stagger">
           <!-- Icon -->
@@ -297,8 +357,8 @@
           <p class="text-white/50 text-sm mt-1">Masuk ke akun TicketIn kamu</p>
         </div>
 
-        <!-- Form -->
-        <form id="login-form" class="space-y-5 stagger" novalidate>
+        <!-- Form (ditambahkan method="POST") -->
+        <form id="login-form" method="POST" action="" class="space-y-5 stagger" novalidate>
 
           <!-- Email -->
           <div>
@@ -360,12 +420,9 @@
           </div>
 
           <!-- Submit -->
-          <button type="submit" class="btn-login w-full rounded-xl py-3.5 text-sm tracking-wide mt-2">
+          <button type="submit" name="login" class="btn-login w-full rounded-xl py-3.5 text-sm tracking-wide mt-2">
             <span>🎟️ Masuk ke TicketIn</span>
           </button>
-
-          <!-- General error -->
-          <p class="text-red-400 text-xs text-center hidden" id="general-err"></p>
 
           <!-- Divider -->
           <div class="divider text-xs">atau lanjutkan dengan</div>
@@ -394,7 +451,7 @@
         <!-- Register Link -->
         <p class="text-center text-white/50 text-sm mt-6">
           Belum punya akun?
-          <a href="register.html" class="text-gold font-semibold hover:text-gold-light transition-colors hover:underline ml-1">Daftar sekarang</a>
+          <a href="register.php" class="text-gold font-semibold hover:text-gold-light transition-colors hover:underline ml-1">Daftar sekarang</a>
         </p>
 
       </div>
@@ -410,8 +467,8 @@
     <a href="#" class="hover:text-gold transition-colors">Kebijakan Privasi</a>
   </footer>
 
-  <!-- ══ SUCCESS OVERLAY ══ -->
-  <div class="success-overlay" id="success-overlay">
+  <!-- ══ SUCCESS OVERLAY (Muncul jika PHP success == true) ══ -->
+  <div class="success-overlay <?php echo $overlay_class; ?>" id="success-overlay">
     <div class="success-circle">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -419,6 +476,15 @@
     </div>
     <p class="text-white text-lg font-bold">Berhasil Masuk!</p>
     <p class="text-white/50 text-sm">Mengalihkan ke beranda...</p>
+    
+    <?php
+    // Redirect ke dashboard.php jika sukses
+    if ($success) {
+        echo "<script>
+                setTimeout(() => { window.location.href = 'dashboard.php'; }, 2000);
+              </script>";
+    }
+    ?>
   </div>
 
   <!-- ══ SCRIPTS ══ -->
@@ -444,20 +510,18 @@
       });
     });
 
-    // Form validation + submit
+    // Form validation + submit (JS diubah agar mengizinkan form dikirim ke PHP)
     const form = document.getElementById('login-form');
     form.addEventListener('submit', (e) => {
-      e.preventDefault();
       let valid = true;
 
       const email = document.getElementById('email');
       const pass  = document.getElementById('password');
       const emailErr = document.getElementById('email-err');
       const passErr  = document.getElementById('pass-err');
-      const genErr   = document.getElementById('general-err');
 
       // Reset errors
-      [emailErr, passErr, genErr].forEach(el => el.classList.add('hidden'));
+      [emailErr, passErr].forEach(el => el.classList.add('hidden'));
       [email, pass].forEach(el => el.classList.remove('shake'));
 
       // Validate email
@@ -478,23 +542,16 @@
         valid = false;
       }
 
-      if (!valid) return;
+      // Jika tidak valid, cegah form dikirim
+      if (!valid) {
+          e.preventDefault(); 
+          return;
+      }
 
-      // Simulate login (demo)
+      // Jika valid, biarkan form ter-submit secara default ke server PHP
+      // Tambahkan efek loading pada tombol agar terlihat merespon
       const submitBtn = form.querySelector('button[type=submit]');
-      submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="flex items-center justify-center gap-2"><svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"/><path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8H4z"/></svg> Memproses...</span>';
-
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>🎟️ Masuk ke TicketIn</span>';
-
-        // Show success overlay
-        document.getElementById('success-overlay').classList.add('show');
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1800);
-      }, 1600);
     });
 
     function showError(input, errEl, msg) {
