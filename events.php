@@ -206,6 +206,9 @@ if (isset($conn) && $conn) {
           <label class="flex items-center gap-3 text-sm text-gray-600 hover:text-navy-deep cursor-pointer">
             <input type="checkbox" class="filter-checkbox filter-category" value="Hiburan" onchange="filterEvents()"> Hiburan
           </label>
+          <label class="flex items-center gap-3 text-sm text-gray-600 hover:text-navy-deep cursor-pointer">
+            <input type="checkbox" class="filter-checkbox filter-category" value="Budaya" onchange="filterEvents()"> Budaya
+          </label>
         </div>
       </div>
 
