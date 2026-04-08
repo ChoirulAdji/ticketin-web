@@ -337,8 +337,14 @@ if (isset($_POST['place_order'])) {
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Kota Asal</label>
-                  <input id="f-kota" type="text" value="<?= htmlspecialchars($u['kota_asal']) ?>" readonly class="form-input w-full px-4 py-2.5 text-sm bg-gray-50 opacity-80 cursor-not-allowed"/>
-                </div>
+                  <input 
+                  id="f-kota" 
+                  name="kota_asal"
+                  type="text" 
+                  value="<?= htmlspecialchars($u['kota_asal']) ?>" 
+                  class="form-input w-full px-4 py-2.5 text-sm bg-white cursor-text"
+                />                
+              </div>
               </div>
 
               <!-- Attendee note -->
