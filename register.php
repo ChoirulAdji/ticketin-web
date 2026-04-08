@@ -543,6 +543,7 @@ $overlay_class = $success ? 'show' : '';
                       <svg xmlns="http://www.w3.org/2000/svg" class="input-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                       </svg>
+                      <!-- Membiarkan type="url", karena sekarang form akan divalidasi sebelum disembunyikan di step 2 -->
                       <input type="url" id="website-org" name="website" placeholder="https://instagram.com/namaeo" class="input-field w-full rounded-xl pl-10 pr-4 py-3 text-sm" />
                     </div>
                   </div>
@@ -713,19 +714,24 @@ $overlay_class = $success ? 'show' : '';
     const step2 = document.getElementById('step-2');
     const dot1 = document.getElementById('dot-1');
     const dot2 = document.getElementById('dot-2');
-    const line1 = document.getElementById('line1');
+    // Typo diperbaiki: getElementById('line-1') bukan ('line1')
+    const line1 = document.getElementById('line-1');
     const progress = document.getElementById('progress-fill');
 
     function nextStep() {
-      // Basic JS validation before next step
-      const nama = document.getElementById('nama').value;
-      const email = document.getElementById('reg-email').value;
-      const phone = document.getElementById('phone').value;
-      
-      if(!nama || !email || !phone) {
-          alert('Mohon lengkapi Nama, Email, dan No HP');
-          return;
+      // Validasi Native HTML5 sebelum menyembunyikan elemen step 1
+      const step1Inputs = document.querySelectorAll('#step-1 input:not(:disabled), #step-1 select:not(:disabled)');
+      let isValid = true;
+      for (let input of step1Inputs) {
+        if (!input.checkValidity()) {
+          input.reportValidity(); // Memunculkan popup error browser pada field yg salah
+          isValid = false;
+          break; // Stop di field pertama yang error
+        }
       }
+
+      // Jika ada format yang tidak valid (misal salah isi URL website), hentikan proses "Lanjut"
+      if (!isValid) return; 
 
       step1.classList.remove('active');
       step2.classList.add('active');
@@ -751,8 +757,22 @@ $overlay_class = $success ? 'show' : '';
     const rolePengelola = document.getElementById('role-pengelola');
     const pengelolaSection = document.getElementById('pengelola-section');
 
-    rolePembeli.addEventListener('change', () => { pengelolaSection.classList.remove('show'); });
-    rolePengelola.addEventListener('change', () => { pengelolaSection.classList.add('show'); });
+    function togglePengelolaFields() {
+      const pengelolaInputs = pengelolaSection.querySelectorAll('input, select');
+      if (rolePengelola.checked) {
+        pengelolaSection.classList.add('show');
+        pengelolaInputs.forEach(input => input.disabled = false); // Mengaktifkan field
+      } else {
+        pengelolaSection.classList.remove('show');
+        pengelolaInputs.forEach(input => input.disabled = true); // Menonaktifkan agar tidak memblokir validasi Submit
+      }
+    }
+
+    rolePembeli.addEventListener('change', togglePengelolaFields);
+    rolePengelola.addEventListener('change', togglePengelolaFields);
+
+    // Jalankan satu kali saat halaman dimuat untuk mengatur status awal input
+    togglePengelolaFields();
 
     // Toggle Password Visibility
     function togglePw(inputId, eyeShowId, eyeHideId) {
