@@ -30,7 +30,7 @@ if ($user_data['role'] !== 'pengelola' && $user_data['role'] !== 'admin') {
     exit;
 }
 
-// 3. Data Navbar Dinamis (Disesuaikan dengan dashboard.php)
+// 3. Data Navbar Dinamis 
 $nama_panggilan = "Tamu";
 if (isset($_SESSION['nama'])) {
     $parts = explode(' ', trim($_SESSION['nama']));
@@ -257,9 +257,16 @@ if ($action == 'edit' && isset($_GET['id'])) {
 <body class="bg-gray-50 text-navy-deep antialiased flex flex-col min-h-screen">
 
   <!-- NAVBAR IDENTIK DENGAN DASHBOARD.PHP -->
-  <nav class="bg-navy-deep sticky top-0 z-50 shadow-lg">
+  <nav class="bg-navy-mid sticky top-0 z-50 shadow-lg">
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="dashboard.php" class="text-2xl font-extrabold text-white tracking-tight">TicketIn</a>
+    <a href="#" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center group-hover:bg-gold-light transition-all duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+          </svg>
+        </div>
+        <span class="text-xl text-white font-bold tracking-tight">TicketIn</span>
+      </a>
 
       <div class="hidden md:flex items-center gap-8">
         <a href="dashboard.php" class="text-white/90 hover:text-white font-medium nav-link">Beranda</a>
@@ -278,15 +285,7 @@ if ($action == 'edit' && isset($_GET['id'])) {
       </button>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-navy-mid border-t border-white/10 px-6 py-4 space-y-4">
-      <a href="dashboard.php" class="block text-white font-medium">Beranda</a>
-      <a href="events.php" class="block text-white font-medium">Jelajah Event</a>
-      <div class="pt-4 border-t border-white/10 flex items-center gap-3">
-        <img src="<?= $avatar_src ?>" alt="Avatar" class="w-10 h-10 rounded-full border border-gold object-cover">
-        <a href="profil.php" class="text-white font-medium block">Profil Saya</a>
-      </div>
-    </div>
+    
   </nav>
 
   <!-- MAIN CONTENT -->
@@ -620,51 +619,22 @@ if ($action == 'edit' && isset($_GET['id'])) {
 
   </main>
 
-  <!-- FOOTER IDENTIK DENGAN DASHBOARD.PHP -->
-  <footer class="bg-navy-deep text-white pt-16 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10 pb-12">
-      <div class="md:col-span-1">
-        <a href="dashboard.php" class="text-2xl font-extrabold text-white tracking-tight mb-4 block">TicketIn</a>
-        <p class="text-white/70 text-sm leading-relaxed">Platform pemesanan tiket event nomor satu di Indonesia. Mudah, Cepat, dan Aman.</p>
+  <!-- FOOTER -->
+<footer id="main-footer" class="bg-navy-mid text-white mt-10 hidden lg:block">
+  <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between gap-4 items-center text-sm text-white/50 border-t border-white/10">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 bg-gold rounded flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-navy-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
       </div>
-      <div>
-        <h4 class="font-bold text-lg mb-4 text-white">Perusahaan</h4>
-        <ul class="space-y-3 text-sm text-white/70">
-          <li><a href="tentang.html" class="hover:text-gold transition-colors">Tentang Kami</a></li>
-          <li><a href="hubungi.html" class="hover:text-gold transition-colors">Hubungi Kami</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-bold text-lg mb-4 text-white">Event</h4>
-        <ul class="space-y-3 text-sm text-white/70">
-          <li><a href="events.php?cat=konser" class="hover:text-gold transition-colors">🎵 Konser Musik</a></li>
-          <li><a href="events.php?cat=festival" class="hover:text-gold transition-colors">🎪 Festival</a></li>
-          <li><a href="events.php?cat=seminar" class="hover:text-gold transition-colors">💡 Seminar</a></li>
-          <li><a href="events.php?cat=olahraga" class="hover:text-gold transition-colors">🏃 Olahraga</a></li>
-          <li><a href="events.php?cat=budaya" class="hover:text-gold transition-colors">🎭 Budaya</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-bold text-lg mb-4 text-white">Metode Pembayaran</h4>
-        <div class="flex flex-wrap gap-3">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" class="h-8 bg-white p-1 rounded" alt="BCA" />
-          <img src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1200px-Bank_Negara_Indonesia_logo_%282004%29.svg.png" class="h-8 bg-white p-1 rounded" alt="BNI" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg" class="h-8 bg-white p-1 rounded" alt="OVO" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" class="h-8 bg-white p-1 rounded" alt="GoPay" />
-          <img src="https://freepng.com/uploads/images/202512/uick-response-code-indonesia-standard-qris-logo-vector-png_1020x.jpg" class="h-8 bg-white p-0.5 rounded-md shadow-sm hover:scale-105 transition" alt="QRIS" />
-        </div>
-      </div>
+      <span class="font-semibold text-white">TicketIn</span>
     </div>
-    <div class="border-t border-navy-mid">
-      <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-white/40">
-        <p>© 2026 TicketIn. All rights reserved.</p>
-        <div class="flex gap-4">
-          <a href="#" class="hover:text-gold">Syarat & Ketentuan</a>
-          <a href="#" class="hover:text-gold">Kebijakan Privasi</a>
-        </div>
-      </div>
+    <p>© 2026 TicketIn. All rights reserved.</p>
+    <div class="flex gap-4">
+      <a href="#" class="hover:text-gold transition-colors">Bantuan</a>
+      <a href="#" class="hover:text-gold transition-colors">Kebijakan Privasi</a>
     </div>
-  </footer>
+  </div>
+</footer>
 
   <script>
     // Toggle Mobile Menu
